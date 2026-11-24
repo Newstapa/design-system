@@ -21,8 +21,8 @@ assets/tokens.json           색·글자 크기·여백 원본. 디자인 수치
 for-ai/json-spec.md          엔진용 JSON 작성법 (Claude 스킬, 웹 렌더러)
 for-ai/draw-yourself.md      엔진을 못 쓰는 AI가 직접 그릴 때의 규칙
 for-ai/custom-instructions.md  ChatGPT·Gemini 지침 칸에 붙여넣을 문구
-engine/                      그래픽 엔진 (JavaScript)
-scripts/render.py            JSON → JPG 렌더링 (Python + Playwright)
+engine/                      그래픽 엔진 (JavaScript). nt-export-svg.js는 일러스트용 SVG 변환
+scripts/render.py            JSON → JPG·SVG·PDF 렌더링 (Python + Playwright)
 scripts/build-skill.sh       Claude 스킬 zip 만들기
 skills/newstapa-graphics/    Claude 스킬 (GitHub 최신본을 받아 씀)
 web/                         웹 렌더러 (GitHub Pages)
@@ -35,18 +35,27 @@ assets/fonts, logo.png, maps/  Pretendard 글꼴, 로고, 한국 시·도 지도
 | 바꾸고 싶은 것 | 고칠 파일 | 다시 배포할 것 |
 |---|---|---|
 | 색, 글자 크기, 여백 | `assets/tokens.json` | 없음 (push하면 바로 반영) |
+| 강조색 추가·수정 | `assets/tokens.json`의 `accents` + `guide.md` 색 표 | 없음 |
 | 디자인 원칙, 문구 | `guide.md`, `for-ai/*.md` | 없음 |
 | 그래픽 모양, 새 유형 | `engine/`, `examples/` | 없음. 웹 렌더러는 `web/index.html`의 `?v=` 숫자를 올림 |
 | 스킬 동작 순서 | `skills/newstapa-graphics/SKILL.md` | `bash scripts/build-skill.sh` 후 zip을 다시 등록 |
 
 수정 내역은 [CHANGELOG.md](CHANGELOG.md)에 적습니다. `assets/tokens.json`의 `version`도 올립니다.
 
+## 일러스트레이터에서 고치기
+
+웹 렌더러의 'SVG 저장 (일러스트용)' 버튼, 또는 `render.py --svg`로 받은 SVG를 일러스트레이터에서 엽니다.
+글자는 줄 단위 텍스트, 막대·선은 개별 도형으로 들어 있어 바로 고칠 수 있습니다.
+
+- 맥에 **Pretendard 글꼴을 설치**해야 글자가 제대로 보입니다: https://github.com/orioncactus/pretendard/releases
+- 지도의 지역 이름은 흰 테두리용 글자와 본 글자가 겹쳐 두 개씩 들어 있습니다. 고칠 때 둘 다 고칩니다.
+
 ## 직접 실행해 보기
 
 ```bash
 # JSON → JPG
 pip install playwright && playwright install chromium
-python3 scripts/render.py examples/bar-horizontal.json -o out.jpg
+python3 scripts/render.py examples/bar-horizontal.json -o out.jpg --svg out.svg
 
 # 웹 렌더러
 python3 -m http.server 8000   # http://localhost:8000/web/

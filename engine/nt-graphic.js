@@ -98,8 +98,8 @@
     });
     return lg;
   }
-  var DARK = ['#FF723D', '#2F5C8A', '#3E9C84', '#8A6FB0', '#6B6B6B', '#D9531F', '#A33A12', '#222222'];
-  function onColor(fill) { return DARK.indexOf(String(fill).toUpperCase()) >= 0 ? '#FFFFFF' : C.ink; }
+  var DARK = ['#2F5C8A', '#3E9C84', '#8A6FB0', '#6B6B6B', '#222222'];
+  function onColor(fill) { var f = String(fill).toUpperCase(); return f === C.point.toUpperCase() || f === C.pointDark.toUpperCase() || DARK.indexOf(f) >= 0 || T.palette.sequential.slice(-2).indexOf(f) >= 0 ? '#FFFFFF' : C.ink; }
 
   // ---------- 막대 그래프 ----------
   function renderBar(spec, body) {
@@ -643,7 +643,14 @@
 
   // ---------- 진입점 ----------
   function render(spec, tokens, mount) {
-    T = tokens; C = T.color; F = T.font; warnings = [];
+    T = JSON.parse(JSON.stringify(tokens)); C = T.color; F = T.font; warnings = [];
+    // 강조색 세트 적용 (tokens.accents 에 등록된 것만)
+    var accKey = spec.accent || T.defaultAccent || 'orange', acc = (T.accents || {})[accKey];
+    if (!acc) { warn('등록되지 않은 강조색 "' + spec.accent + '" — 기본색으로 그렸습니다. 쓸 수 있는 값: ' + Object.keys(T.accents || {}).join(', ')); acc = (T.accents || {})[T.defaultAccent]; }
+    if (acc) {
+      C.point = acc.point; C.pointDark = acc.pointDark; C.pointTint = acc.pointTint; C.pointTintLight = acc.pointTintLight || acc.pointTint;
+      T.palette.sequential = acc.sequential; T.palette.focus[0] = acc.point; T.palette.categorical[0] = acc.point;
+    }
     var pad = T.canvas.padding, cw = spec.width || T.canvas.width;
     W = cw - pad.side * 2;
     var root = document.documentElement.style;

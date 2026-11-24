@@ -17,7 +17,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var specEl = $('spec'), msgEl = $('messages'), mount = $('mount'), scaler = $('scaler'), stage = $('stage');
-  var saveBtn = $('save'), emptyEl = $('empty');
+  var accentEl = $('accent'), sizeEl = $('sizeInfo'), saveBtn = $('save'), svgBtn = $('saveSvg'), emptyEl = $('empty');
   var tokens = null, geo = null, timer = null, lastTitle = 'graphic';
 
   window.NT_LOGO_SRC = BASE + 'assets/logo.png';
@@ -51,7 +51,12 @@
 
   function needsMap(spec) { return spec.type === 'map' || (spec.blocks || []).some(function (b) { return b.type === 'map'; }); }
 
+  function outSize() {
+    var frame = mount.firstElementChild; if (!frame || !tokens) return null;
+    var k = tokens.canvas.scale; return { w: Math.round(frame.offsetWidth * k), h: Math.round(frame.offsetHeight * k) };
+  }
   function fit() {
+    var sz = outSize(); sizeEl.textContent = sz ? '저장 크기 가로 ' + sz.w.toLocaleString() + 'px × 세로 ' + sz.h.toLocaleString() + 'px' : '';
     var frame = mount.firstElementChild; if (!frame) { stage.style.height = ''; return; }
     var avail = stage.clientWidth - 32, w = frame.offsetWidth, s = Math.min(1, avail / w);
     scaler.style.width = w + 'px';
@@ -61,35 +66,52 @@
 
   async function render() {
     var text = specEl.value.trim();
-    if (!text) { mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; msgEl.innerHTML = ''; fit(); return; }
+    if (!text) { mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; svgBtn.disabled = true; msgEl.innerHTML = ''; fit(); return; }
     var spec;
-    try { spec = extractJSON(text); } catch (e) { showMessages(e.message); saveBtn.disabled = true; return; }
+    try { spec = extractJSON(text); } catch (e) { showMessages(e.message); saveBtn.disabled = true; svgBtn.disabled = true; return; }
     try {
       if (needsMap(spec) && !geo) { geo = await (await fetch(BASE + 'assets/maps/korea-sido.geo.json')).json(); window.NT_GEO_KOREA = geo; }
       scaler.style.transform = 'none';          // 엔진의 넘침 검사가 실제 크기로 이뤄지도록
       mount.innerHTML = '';
       var warns = NT.render(spec, tokens, mount);
-      emptyEl.hidden = true; saveBtn.disabled = false;
+      emptyEl.hidden = true; saveBtn.disabled = false; svgBtn.disabled = false;
       lastTitle = (spec.title || 'graphic').replace(/\n/g, ' ');
+      accentEl.value = (tokens.accents && tokens.accents[spec.accent]) ? spec.accent : tokens.defaultAccent;
       showMessages(null, warns);
     } catch (e) {
-      mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true;
+      mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; svgBtn.disabled = true;
       showMessages('그리기 오류: ' + (e && e.message || e));
     }
     fit();
   }
 
+  function fileBase() {
+    var d = new Date(), ymd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    return ymd + '_' + lastTitle.replace(/[\\/:*?"<>|'\s]+/g, '_').slice(0, 40);
+  }
+  function download(blob, name) {
+    var href = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = href; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(href); }, 5000);
+  }
+  async function saveSvg() {
+    var frame = mount.firstElementChild; if (!frame) return;
+    var prev = scaler.style.transform; scaler.style.transform = 'none';   // 실제 크기에서 위치를 잰다
+    try {
+      var svg = NTExport.toSVG(frame), name = fileBase() + '.svg';
+      download(new Blob([svg], { type: 'image/svg+xml' }), name);
+      toast('저장했습니다: ' + name);
+    } catch (e) { toast('SVG 저장 실패: ' + (e && e.message || e)); }
+    scaler.style.transform = prev;
+  }
   async function save() {
     var frame = mount.firstElementChild; if (!frame) return;
     saveBtn.disabled = true; saveBtn.textContent = '저장 중…';
     try {
       var url = await htmlToImage.toJpeg(frame, { quality: tokens.canvas.quality / 100, pixelRatio: tokens.canvas.scale, backgroundColor: '#FFFFFF', cacheBust: false });
-      var d = new Date(), ymd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
-      var name = ymd + '_' + lastTitle.replace(/[\\/:*?"<>|'\s]+/g, '_').slice(0, 40) + '.jpg';
-      var blob = await (await fetch(url)).blob(), href = URL.createObjectURL(blob);
-      var a = document.createElement('a'); a.href = href; a.download = name; document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function () { URL.revokeObjectURL(href); }, 5000);
-      toast('저장했습니다: ' + name);
+      var name = fileBase() + '.jpg', sz = outSize();
+      download(await (await fetch(url)).blob(), name);
+      toast('저장했습니다: ' + name + ' (가로 ' + sz.w.toLocaleString() + 'px × 세로 ' + sz.h.toLocaleString() + 'px)');
     } catch (e) {
       toast('저장 실패: ' + (e && e.message || e));
     }
@@ -112,6 +134,13 @@
     } catch (e) { toast('복사 실패: ' + (e && e.message || e)); }
   }
 
+  // 강조색을 바꾸면 JSON의 accent 값을 고쳐 다시 그린다
+  function changeAccent() {
+    var spec; try { spec = extractJSON(specEl.value); } catch (e) { toast('먼저 JSON을 붙여넣어 주세요.'); return; }
+    if (accentEl.value === tokens.defaultAccent) delete spec.accent; else spec.accent = accentEl.value;
+    specEl.value = JSON.stringify(spec, null, 2); render();
+  }
+
   async function loadExample(name) {
     if (!name) return;
     var txt = await (await fetch(BASE + 'examples/' + name + '.json')).text();
@@ -124,10 +153,16 @@
     sel.addEventListener('change', function () { loadExample(sel.value); });
     specEl.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(render, 300); });
     saveBtn.addEventListener('click', save);
+    svgBtn.addEventListener('click', saveSvg);
     $('copyPrompt').addEventListener('click', copyPrompt);
     $('copyFull').addEventListener('click', copyFull);
     window.addEventListener('resize', fit);
     tokens = await (await fetch(BASE + 'assets/tokens.json')).json();
+    Object.keys(tokens.accents || {}).forEach(function (k) {
+      var o = document.createElement('option'); o.value = k; o.textContent = tokens.accents[k].label; accentEl.appendChild(o);
+    });
+    accentEl.value = tokens.defaultAccent;
+    accentEl.addEventListener('change', changeAccent);
     await document.fonts.load('700 20px "Pretendard Variable"');
     await document.fonts.ready;
     window.NT_APP_READY = true;

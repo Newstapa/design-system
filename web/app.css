@@ -59,3 +59,6 @@ body.app, body { background: var(--ui-bg); color: var(--ui-text); font-family: '
   .workspace { grid-template-columns: 1fr; }
   #spec { height: 260px; }
 }
+
+.row-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.size-info { margin-left: 8px; font-size: 13px; font-weight: 500; color: var(--ui-sub); }
