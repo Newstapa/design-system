@@ -1,0 +1,19 @@
+# 뉴스타파 디자인 시스템
+
+> 뉴스타파(한국 탐사보도 매체) 기사용 데이터 그래픽의 디자인 가이드, 디자인 토큰, 그래픽 엔진. 기자가 기사를 주고 시각화를 요청하면 AI는 이 문서들을 따라 그래픽을 만든다. 숫자를 지어내지 않고, 강조는 주황(#FF723D) 1~2곳, 나머지는 회색, 흰 배경, 출처 필수.
+
+## 먼저 읽을 문서
+
+- [디자인 가이드](https://raw.githubusercontent.com/Newstapa/design-system/main/guide.md): 원칙, 색, 글자 크기, 유형별 규칙
+- [디자인 토큰](https://raw.githubusercontent.com/Newstapa/design-system/main/assets/tokens.json): 색·크기 수치 원본
+
+## 만드는 방법
+
+- [JSON 작성법](https://raw.githubusercontent.com/Newstapa/design-system/main/for-ai/json-spec.md): 그래픽 엔진을 실행할 수 있거나 웹 렌더러를 쓸 때
+- [직접 그리기 규칙](https://raw.githubusercontent.com/Newstapa/design-system/main/for-ai/draw-yourself.md): 엔진을 실행할 수 없는 AI가 Python·HTML로 직접 그릴 때
+- [웹 렌더러](https://newstapa.github.io/design-system/web/): JSON을 붙여넣으면 JPG로 저장
+
+## 선택
+
+- [유형별 JSON 예시](https://github.com/Newstapa/design-system/tree/main/examples)
+- [AI 지침 칸에 넣을 문구](https://raw.githubusercontent.com/Newstapa/design-system/main/for-ai/custom-instructions.md)

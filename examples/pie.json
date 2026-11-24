@@ -1,0 +1,14 @@
+{
+  "type": "pie",
+  "title": "국민연금 가입 대상 3명 중 1명은 사각지대",
+  "subtitle": "총 2,969만 명",
+  "data": [
+    {"label": "정상 납부", "value": 1974},
+    {"label": "적용 제외", "value": 663},
+    {"label": "납부 유예", "value": 276},
+    {"label": "장기 체납", "value": 57}
+  ],
+  "highlight": ["적용 제외"],
+  "valueSuffix": "만 명",
+  "source": "김선민 의원실 (예시 데이터)"
+}
