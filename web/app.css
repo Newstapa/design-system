@@ -24,6 +24,9 @@ body.app, body { background: var(--ui-bg); color: var(--ui-text); font-family: '
 .btn:hover { border-color: #999; }
 .btn.primary { background: var(--ui-point); border-color: var(--ui-point); color: #fff; }
 .btn.primary:hover { background: var(--ui-point-dark); border-color: var(--ui-point-dark); }
+.btn.ghost { border-color: transparent; color: var(--ui-sub); font-weight: 500; padding-left: 6px; padding-right: 6px; text-decoration: underline; text-underline-offset: 3px; }
+.btn.ghost:hover { color: var(--ui-text); }
+.steps .hint { font-size: 13px; color: #8A8A8A; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .link { font-size: 14px; color: var(--ui-sub); }
 

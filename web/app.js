@@ -11,6 +11,8 @@
     ['slope', '기울기'], ['dot', '화살표 점'], ['pie', '원그래프'], ['table', '표'],
     ['timeline', '타임라인'], ['map', '지도'], ['stat-table', '숫자 카드 + 표']
   ];
+  var SPEC_URL = 'https://raw.githubusercontent.com/Newstapa/design-system/main/for-ai/json-spec.md';
+  var SHORT_PROMPT = '아래 주소의 뉴스타파 그래픽 지침을 읽고, 그 형식에 맞는 JSON을 만들어 주세요.\n' + SPEC_URL + '\n\n[기사]\n';
   var PROMPT_TAIL = '\n\n---\n위 지침에 따라 아래 기사(또는 데이터)로 그래픽 JSON을 만들어 주세요.\n\n[기사]\n';
 
   var $ = function (id) { return document.getElementById(id); };
@@ -94,13 +96,19 @@
     saveBtn.disabled = false; saveBtn.textContent = 'JPG 저장';
   }
 
+  async function copyText(txt) {
+    if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(txt);
+    else { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  }
   async function copyPrompt() {
+    try { await copyText(SHORT_PROMPT); toast('요청문을 복사했습니다. AI 대화창에 붙여넣고 기사를 덧붙이세요.'); }
+    catch (e) { toast('복사 실패: ' + (e && e.message || e)); }
+  }
+  async function copyFull() {
     try {
       var txt = await (await fetch(BASE + 'for-ai/json-spec.md')).text();
-      txt += PROMPT_TAIL;
-      if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(txt);
-      else { var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
-      toast('AI 지침을 복사했습니다. AI 대화창에 붙여넣고 기사를 덧붙이세요.');
+      await copyText(txt + PROMPT_TAIL);
+      toast('전체 지침을 복사했습니다. AI 대화창에 붙여넣고 기사를 덧붙이세요.');
     } catch (e) { toast('복사 실패: ' + (e && e.message || e)); }
   }
 
@@ -117,6 +125,7 @@
     specEl.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(render, 300); });
     saveBtn.addEventListener('click', save);
     $('copyPrompt').addEventListener('click', copyPrompt);
+    $('copyFull').addEventListener('click', copyFull);
     window.addEventListener('resize', fit);
     tokens = await (await fetch(BASE + 'assets/tokens.json')).json();
     await document.fonts.load('700 20px "Pretendard Variable"');

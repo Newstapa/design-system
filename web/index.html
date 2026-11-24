@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.2.1">
-<link rel="stylesheet" href="app.css?v=0.2.1">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.3.1">
+<link rel="stylesheet" href="app.css?v=0.3.1">
 </head>
 <body>
 <header class="app-header">
@@ -18,12 +18,13 @@
 <section class="steps">
   <ol>
     <li>
-      <b>1. AI에게 지침 주기</b>
-      <span>아래 버튼으로 지침을 복사해 ChatGPT·Claude·Gemini 등에 기사와 함께 붙여넣으세요.</span>
+      <b>1. AI에게 요청하기</b>
+      <span>버튼을 누르면 지침 주소가 담긴 짧은 요청문이 복사됩니다. AI 대화창에 붙여넣고 기사를 덧붙이세요.</span>
       <div class="row">
-        <button id="copyPrompt" class="btn">AI 지침 복사</button>
-        <a id="promptLink" class="link" href="../for-ai/json-spec.md" target="_blank" rel="noopener">지침 원문 보기</a>
+        <button id="copyPrompt" class="btn">요청문 복사</button>
+        <button id="copyFull" class="btn ghost" title="주소를 열지 못하는 AI용">전체 지침 복사</button>
       </div>
+      <span class="hint">AI가 "주소를 열 수 없다"고 하면 '전체 지침 복사'를 쓰세요.</span>
     </li>
     <li>
       <b>2. JSON 붙여넣기</b>
@@ -65,7 +66,7 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.2.1"></script>
-<script src="app.js?v=0.2.1"></script>
+<script src="../engine/nt-graphic.js?v=0.3.1"></script>
+<script src="app.js?v=0.3.1"></script>
 </body>
 </html>
