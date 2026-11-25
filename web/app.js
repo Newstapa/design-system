@@ -57,11 +57,13 @@
   }
   function fit() {
     var sz = outSize(); sizeEl.textContent = sz ? '저장 크기 가로 ' + sz.w.toLocaleString() + 'px × 세로 ' + sz.h.toLocaleString() + 'px' : '';
-    var frame = mount.firstElementChild; if (!frame) { stage.style.height = ''; return; }
-    var avail = stage.clientWidth - 32, w = frame.offsetWidth, s = Math.min(1, avail / w);
+    var fig = scaler.parentElement, frame = mount.firstElementChild;
+    if (!frame) { fig.style.height = ''; fig.style.minHeight = ''; return; }
+    fig.style.minHeight = '0';
+    var avail = fig.clientWidth, w = frame.offsetWidth, s = Math.min(1, avail / w);
     scaler.style.width = w + 'px';
     scaler.style.transform = 'scale(' + s + ')';
-    stage.style.height = (frame.offsetHeight * s + 32) + 'px';
+    fig.style.height = (frame.offsetHeight * s) + 'px';
   }
 
   async function render() {

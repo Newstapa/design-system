@@ -4,64 +4,79 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.5.0">
-<link rel="stylesheet" href="app.css?v=0.5.0">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.6.0">
+<link rel="stylesheet" href="app.css?v=0.6.0">
 </head>
 <body>
 <header class="app-header">
-  <div class="app-header-inner">
-    <h1>뉴스타파 그래픽 렌더러</h1>
-    <p>AI가 만든 JSON을 붙여넣으면 뉴스타파 디자인 가이드대로 그래픽을 만듭니다.</p>
-  </div>
+  <h1>뉴스타파 그래픽 렌더러</h1>
+  <p>AI가 만든 JSON을 붙여넣으면 뉴스타파 디자인 가이드대로 그래픽을 만듭니다.</p>
 </header>
 
 <section class="steps">
   <ol>
-    <li>
-      <b>1. AI에게 요청하기</b>
-      <span>버튼을 누르면 지침 주소가 담긴 짧은 요청문이 복사됩니다. AI 대화창에 붙여넣고 기사를 덧붙이세요.</span>
+    <li class="card">
+      <b><i>1</i>AI에게 요청하기</b>
+      <span>지침 주소가 담긴 짧은 요청문을 복사해 AI 대화창에 붙여넣고, 기사를 덧붙이세요.</span>
       <div class="row">
         <button id="copyPrompt" class="btn">요청문 복사</button>
         <button id="copyFull" class="btn ghost" title="주소를 열지 못하는 AI용">전체 지침 복사</button>
       </div>
       <span class="hint">AI가 "주소를 열 수 없다"고 하면 '전체 지침 복사'를 쓰세요.</span>
     </li>
-    <li>
-      <b>2. JSON 붙여넣기</b>
-      <span>AI가 준 JSON 코드 블록을 그대로 아래 칸에 붙여넣으면 바로 미리보기가 바뀝니다.</span>
+    <li class="card">
+      <b><i>2</i>JSON 붙여넣기</b>
+      <span>AI가 준 답을 통째로 아래 JSON 칸에 붙여넣으면 바로 미리보기가 바뀝니다.</span>
     </li>
-    <li>
-      <b>3. 확인하고 저장</b>
-      <span>숫자·출처를 확인하고 경고가 없으면 JPG로 저장하세요. 일러스트레이터에서 손보려면 SVG로 저장하세요 (Pretendard 글꼴 설치 필요).</span>
+    <li class="card">
+      <b><i>3</i>확인하고 저장</b>
+      <span>숫자·출처를 확인하고 JPG로 저장하세요. 일러스트레이터에서 손보려면 SVG로 저장하세요 (Pretendard 글꼴 필요).</span>
     </li>
   </ol>
 </section>
 
 <main class="workspace">
-  <section class="pane editor">
+  <section class="card pane editor">
     <div class="pane-head">
       <h2>JSON</h2>
-      <label class="select">강조색
-        <select id="accent"></select>
-      </label>
-      <label class="select">예시 불러오기
-        <select id="example">
-          <option value="">선택</option>
-        </select>
-      </label>
+      <div class="controls">
+        <label class="select"><span>강조색</span>
+          <select id="accent"></select>
+        </label>
+        <label class="select"><span>예시</span>
+          <select id="example">
+            <option value="">불러오기</option>
+          </select>
+        </label>
+      </div>
     </div>
-    <textarea id="spec" spellcheck="false" placeholder='AI가 준 JSON을 여기에 붙여넣으세요. 예: {"type":"bar", "title":"…", …}'></textarea>
+    <div class="well">
+      <textarea id="spec" spellcheck="false" placeholder='AI가 준 JSON을 여기에 붙여넣으세요. 예: {"type":"bar", "title":"…", …}'></textarea>
+    </div>
     <div id="messages" class="messages" aria-live="polite"></div>
   </section>
 
-  <section class="pane preview">
+  <section class="card pane preview">
     <div class="pane-head">
-      <h2>미리보기 <span id="sizeInfo" class="size-info"></span></h2>
-      <div class="row-btns"><button id="saveSvg" class="btn" disabled title="어도비 일러스트레이터에서 글자·도형을 고칠 수 있는 파일">SVG 저장 (일러스트용)</button><button id="save" class="btn primary" disabled>JPG 저장</button></div>
+      <h2>기사 미리보기 <span id="sizeInfo" class="size-info"></span></h2>
+      <div class="row-btns">
+        <button id="saveSvg" class="btn" disabled title="어도비 일러스트레이터에서 글자·도형을 고칠 수 있는 파일">SVG 저장 (일러스트용)</button>
+        <button id="save" class="btn primary" disabled>JPG 저장</button>
+      </div>
     </div>
-    <div id="stage" class="stage">
-      <div id="scaler" class="scaler"><div id="mount"></div></div>
-      <div id="empty" class="empty">JSON을 붙여넣으면 여기에 그래픽이 나타납니다.</div>
+    <div id="stage" class="well stage">
+      <!-- 뉴스타파 기사 본문 폭: width 760px, padding 0 15px -->
+      <article class="article-mock">
+        <p class="kicker">미리보기 · 기사 본문에 들어갔을 때의 모습</p>
+        <p>뉴스타파 취재진이 입수한 자료를 분석한 결과, 지난 5년간 관련 예산은 꾸준히 늘었지만 실제 집행률은 해마다 낮아진 것으로 나타났다. 담당 부처는 "사업 구조를 개편하는 과정에서 생긴 일시적인 현상"이라고 해명했지만, 전문가들은 집행 관리 체계 자체에 문제가 있다고 지적한다.</p>
+        <p>특히 지역별로 보면 차이가 더 뚜렷했다. 일부 지역은 배정된 예산의 절반도 쓰지 못했고, 반대로 몇몇 지역은 추가 예산을 요청할 만큼 수요가 몰렸다. 아래 그래픽은 그 차이를 한눈에 보여준다.</p>
+        <figure class="graphic">
+          <div id="scaler" class="scaler"><div id="mount"></div></div>
+          <div id="empty" class="empty">JSON을 붙여넣으면 여기에 그래픽이 나타납니다.</div>
+        </figure>
+        <p>그래픽에서 보듯 격차는 일시적인 현상이 아니라 몇 년째 이어지고 있다. 한 지자체 관계자는 "현장의 수요를 제대로 반영하지 못한 채 예산이 일률적으로 나뉘고 있다"고 말했다.</p>
+        <p>뉴스타파는 관련 부처에 구체적인 개선 계획을 물었으나, 기사 마감 시점까지 답을 받지 못했다. 취재진은 후속 보도를 통해 예산 배분 과정을 더 자세히 살펴볼 예정이다.</p>
+      </article>
     </div>
   </section>
 </main>
@@ -69,8 +84,8 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.5.0"></script>
-<script src="../engine/nt-export-svg.js?v=0.5.0"></script>
-<script src="app.js?v=0.5.0"></script>
+<script src="../engine/nt-graphic.js?v=0.6.0"></script>
+<script src="../engine/nt-export-svg.js?v=0.6.0"></script>
+<script src="app.js?v=0.6.0"></script>
 </body>
 </html>

@@ -3,6 +3,17 @@
 디자이너가 아닌 기자도 AI로 뉴스타파 디자인 가이드에 맞는 그래픽을 만들 수 있게 하는 저장소입니다.
 이 저장소 하나가 **원본**입니다. AI(스킬·맞춤형 GPT·Gem)는 매번 여기서 지침을 읽어 갑니다.
 
+## 바로가기
+
+| 무엇 | 주소 |
+|---|---|
+| 웹 렌더러 (JSON → JPG·SVG) | https://newstapa.github.io/design-system/web/ |
+| 디자인 가이드 | https://github.com/Newstapa/design-system/blob/main/guide.md |
+| AI가 읽는 지침 (원문) | https://raw.githubusercontent.com/Newstapa/design-system/main/guide.md |
+| ChatGPT·Gemini 지침 칸에 넣을 문구 | https://github.com/Newstapa/design-system/blob/main/for-ai/custom-instructions.md |
+
+> 웹 렌더러 주소는 저장소 Settings → Pages에서 `main` / `(root)`를 켜야 열립니다.
+
 ## 기자가 쓰는 법
 
 AI에 기사나 데이터를 붙여넣고 **"시각화해줘"** 라고 쓰면 됩니다. AI별 준비는 한 번만 합니다.
