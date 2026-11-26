@@ -18,7 +18,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var specEl = $('spec'), msgEl = $('messages'), mount = $('mount'), scaler = $('scaler'), stage = $('stage');
   var accentEl = $('accent'), sizeEl = $('sizeInfo'), saveBtn = $('save'), svgBtn = $('saveSvg'), emptyEl = $('empty');
-  var tokens = null, geo = null, timer = null, lastTitle = 'graphic';
+  var tokens = null, baseTokens = null, geo = null, timer = null, lastTitle = 'graphic';
 
   window.NT_LOGO_SRC = BASE + 'assets/logo.png';
 
@@ -78,8 +78,10 @@
       var warns = NT.render(spec, tokens, mount);
       emptyEl.hidden = true; saveBtn.disabled = false; svgBtn.disabled = false;
       lastTitle = (spec.title || 'graphic').replace(/\n/g, ' ');
-      accentEl.value = (tokens.accents && tokens.accents[spec.accent]) ? spec.accent : tokens.defaultAccent;
+      var newAcc = (tokens.accents && tokens.accents[spec.accent]) ? spec.accent : tokens.defaultAccent;
+      if (accentEl.value !== newAcc) { accentEl.value = newAcc; if (window.NTTuner) NTTuner.rebuild(); }
       showMessages(null, warns);
+      if (window.NTTuner) NTTuner.refreshSpec(spec);
     } catch (e) {
       mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; svgBtn.disabled = true;
       showMessages('그리기 오류: ' + (e && e.message || e));
@@ -159,12 +161,36 @@
     $('copyPrompt').addEventListener('click', copyPrompt);
     $('copyFull').addEventListener('click', copyFull);
     window.addEventListener('resize', fit);
-    tokens = await (await fetch(BASE + 'assets/tokens.json')).json();
+    baseTokens = await (await fetch(BASE + 'assets/tokens.json')).json();
+    tokens = baseTokens;
+    NTTuner.init({
+      root: $('tab-tune'), base: baseTokens,
+      getAccent: function () { return accentEl.value || baseTokens.defaultAccent; },
+      onChange: function () { tokens = NTTuner.effective(); render(); },
+      spec: {
+        get: function () { try { return extractJSON(specEl.value); } catch (e) { toast('JSON 형식 오류를 먼저 고쳐 주세요.'); return null; } },
+        set: function (s) { specEl.value = JSON.stringify(s, null, 2); render(); }
+      },
+      copy: async function (txt) {
+        if (!txt) { toast('바뀐 값이 없습니다.'); return; }
+        try { await copyText(txt); toast('변경값을 복사했습니다. Claude에 붙여넣으면 지침에 반영합니다.'); } catch (e) { toast('복사 실패: ' + (e && e.message || e)); }
+      },
+      download: download
+    });
+    tokens = NTTuner.effective();
+    NTTuner.refreshSpec(null);
+    document.querySelectorAll('.tab').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('.tab').forEach(function (x) { var on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-selected', on); });
+        $('tab-json').hidden = b.getAttribute('data-tab') !== 'json';
+        $('tab-tune').hidden = b.getAttribute('data-tab') !== 'tune';
+      });
+    });
     Object.keys(tokens.accents || {}).forEach(function (k) {
       var o = document.createElement('option'); o.value = k; o.textContent = tokens.accents[k].label; accentEl.appendChild(o);
     });
     accentEl.value = tokens.defaultAccent;
-    accentEl.addEventListener('change', changeAccent);
+    accentEl.addEventListener('change', function () { changeAccent(); NTTuner.rebuild(); });
     await document.fonts.load('700 20px "Pretendard Variable"');
     await document.fonts.ready;
     window.NT_APP_READY = true;

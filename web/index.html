@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.6.1">
-<link rel="stylesheet" href="app.css?v=0.6.1">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.7.0">
+<link rel="stylesheet" href="app.css?v=0.7.0">
 </head>
 <body>
 <header class="app-header">
@@ -30,7 +30,7 @@
     </li>
     <li class="card">
       <b><i>3</i>확인하고 저장</b>
-      <span>숫자·출처를 확인하고 JPG로 저장하세요. 일러스트레이터에서 손보려면 SVG로 저장하세요 (Pretendard 글꼴 필요).</span>
+      <span>숫자·출처를 확인하고 JPG로 저장하세요. 글자 크기·색을 손보려면 '디자인 조정' 탭을, 일러스트레이터에서 고치려면 SVG 저장을 쓰세요.</span>
     </li>
   </ol>
 </section>
@@ -38,7 +38,10 @@
 <main class="workspace">
   <section class="card pane editor">
     <div class="pane-head">
-      <h2>JSON</h2>
+      <div class="tabs" role="tablist">
+        <button class="tab active" type="button" role="tab" data-tab="json" aria-selected="true">JSON</button>
+        <button class="tab" type="button" role="tab" data-tab="tune" aria-selected="false">디자인 조정</button>
+      </div>
       <div class="controls">
         <label class="select"><span>강조색</span>
           <select id="accent"></select>
@@ -50,9 +53,10 @@
         </label>
       </div>
     </div>
-    <div class="well">
+    <div id="tab-json" class="tab-panel">
       <textarea id="spec" spellcheck="false" placeholder='AI가 준 JSON을 여기에 붙여넣으세요. 예: {"type":"bar", "title":"…", …}'></textarea>
     </div>
+    <div id="tab-tune" class="tab-panel tune" hidden></div>
     <div id="messages" class="messages" aria-live="polite"></div>
   </section>
 
@@ -84,8 +88,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.6.1"></script>
-<script src="../engine/nt-export-svg.js?v=0.6.1"></script>
-<script src="app.js?v=0.6.1"></script>
+<script src="../engine/nt-graphic.js?v=0.7.0"></script>
+<script src="../engine/nt-export-svg.js?v=0.7.0"></script>
+<script src="tuner.js?v=0.7.0"></script>
+<script src="app.js?v=0.7.0"></script>
 </body>
 </html>
