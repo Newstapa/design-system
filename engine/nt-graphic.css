@@ -8,6 +8,11 @@
 html, body { background: #fff; }
 body { -webkit-font-smoothing: antialiased; }
 
+/* 치수 규칙
+ * - 글자 크기: tokens.json(font.*)에서 온 CSS 변수만 쓴다.
+ * - 선·간격 등 나머지 치수: 1000px 기준 값 × var(--u). 그래픽 너비가 1200px이면 --u = 1.2.
+ */
+:root { --u: 1; }
 .nt-frame {
   position: relative;
   background: var(--bg);
@@ -17,10 +22,10 @@ body { -webkit-font-smoothing: antialiased; }
   overflow-wrap: break-word;
 }
 .nt-logo { position: absolute; }
-.nt-header { padding-right: 130px; }
-.nt-rule-top { height: 2px; background: var(--rule); margin-bottom: 24px; }
-.nt-rule-bottom { height: 1px; background: var(--rule); margin-top: 22px; }
-.nt-legend.text { gap: 8px 28px; font-weight: 700; }
+.nt-header { padding-right: calc(130px * var(--u)); }
+.nt-rule-top { height: calc(2px * var(--u)); background: var(--rule); margin-bottom: calc(24px * var(--u)); }
+.nt-rule-bottom { height: calc(1px * var(--u)); background: var(--rule); margin-top: calc(22px * var(--u)); }
+.nt-legend.text { gap: calc(8px * var(--u)) calc(28px * var(--u)); font-weight: 700; }
 .nt-legend.text i { display: inline-block; box-sizing: border-box; }
 .nt-title {
   font-size: var(--title-size); font-weight: var(--title-weight);
@@ -28,60 +33,61 @@ body { -webkit-font-smoothing: antialiased; }
 }
 .nt-title em { font-style: normal; color: var(--point); }
 .nt-subtitle {
-  margin-top: 10px; font-size: var(--subtitle-size); font-weight: var(--subtitle-weight);
+  margin-top: 0.4em; font-size: var(--subtitle-size); font-weight: var(--subtitle-weight);
   color: var(--subtext); line-height: 1.4;
 }
-.nt-body { margin-top: 36px; }
-.nt-unit { font-size: var(--axis-size); color: var(--subtext); text-align: right; margin-bottom: 8px; }
+.nt-body { margin-top: calc(36px * var(--u)); }
+.nt-unit { font-size: var(--axis-size); color: var(--subtext); text-align: right; margin-bottom: 0.4em; }
 .nt-footer {
-  margin-top: 28px; font-size: var(--source-size); color: var(--subtext); line-height: 1.55;
+  margin-top: calc(28px * var(--u)); font-size: var(--source-size); color: var(--subtext); line-height: 1.45;
 }
-.nt-footer p { padding-left: 1.1em; text-indent: -1.1em; }
+.nt-footer p { margin: 0; padding-left: 1.1em; text-indent: -1.1em; }
+.nt-footer p + p { margin-top: 0.15em; }
 
 /* legend */
-.nt-legend { display: flex; flex-wrap: wrap; gap: 10px 26px; margin-bottom: 20px; font-size: var(--legend-size); font-weight: 500; color: var(--text); }
-.nt-legend span { display: inline-flex; align-items: center; gap: 8px; }
-.nt-legend i { display: inline-block; width: 16px; height: 16px; border-radius: 3px; }
-.nt-legend i.line { height: 4px; border-radius: 2px; width: 22px; }
+.nt-legend { display: flex; flex-wrap: wrap; gap: 0.55em 1.45em; margin-bottom: 1.1em; font-size: var(--legend-size); font-weight: 500; color: var(--text); }
+.nt-legend span { display: inline-flex; align-items: center; gap: 0.45em; }
+.nt-legend i { display: inline-block; width: 0.9em; height: 0.9em; border-radius: calc(3px * var(--u)); }
+.nt-legend i.line { height: calc(4px * var(--u)); border-radius: calc(2px * var(--u)); width: 1.2em; }
 
 /* table */
 .nt-table { width: 100%; border-collapse: collapse; font-size: var(--cell-size); }
 .nt-table th {
   font-size: var(--thead-size); font-weight: 500; color: var(--baseDark);
-  padding: 0 12px 14px; border-bottom: 2px solid var(--rule); vertical-align: bottom;
+  padding: 0 0.6em 0.75em; border-bottom: calc(2px * var(--u)) solid var(--rule); vertical-align: bottom;
 }
-.nt-table td { padding: 15px 12px; border-bottom: 1px solid var(--divider); line-height: 1.45; vertical-align: middle; color: var(--ink); }
-.nt-table tr:last-child td { border-bottom: 2px solid var(--rule); }
+.nt-table td { padding: 0.78em 0.62em; border-bottom: calc(1px * var(--u)) solid var(--divider); line-height: 1.45; vertical-align: middle; color: var(--ink); }
+.nt-table tr:last-child td { border-bottom: calc(2px * var(--u)) solid var(--rule); }
 .nt-table tr.hl td { background: var(--pointTint); font-weight: 700; }
 .nt-table td.em { color: var(--pointDark); font-weight: 700; }
 .nt-table .al-left { text-align: left; } .nt-table .al-center { text-align: center; } .nt-table .al-right { text-align: right; font-variant-numeric: tabular-nums; }
-.nt-table .sub { color: var(--subtext); font-size: 0.85em; font-weight: 400; margin-left: 4px; }
+.nt-table .sub { color: var(--subtext); font-size: 0.85em; font-weight: 400; margin-left: 0.2em; }
 
-/* timeline */
-.nt-tl { position: relative; }
-.nt-tl-row { display: grid; grid-template-columns: var(--tl-date-w) 40px 1fr; align-items: start; }
-.nt-tl-date { font-size: 20px; font-weight: 700; color: var(--ink); text-align: right; padding: 12px 0; line-height: 1.45; font-variant-numeric: tabular-nums; }
+/* timeline — 글자는 font.body, 보조 설명은 font.source */
+.nt-tl { position: relative; font-size: var(--body-size); }
+.nt-tl-row { display: grid; grid-template-columns: var(--tl-date-w) 2em 1fr; align-items: start; }
+.nt-tl-date { font-size: var(--body-size); font-weight: 700; color: var(--ink); text-align: right; padding: 0.6em 0; line-height: 1.45; font-variant-numeric: tabular-nums; }
 .nt-tl-axis { position: relative; align-self: stretch; }
-.nt-tl-axis::before { content: ''; position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: var(--divider); }
-.nt-tl-row:first-child .nt-tl-axis::before { top: 24px; }
-.nt-tl-row:last-child .nt-tl-axis::before { bottom: calc(100% - 26px); }
-.nt-tl-dot { position: absolute; left: 13px; top: 20px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--baseDark); }
-.nt-tl-text { font-size: 20px; color: var(--text); padding: 12px 0; line-height: 1.45; }
-.nt-tl-text .d { display: block; font-size: 17px; color: var(--subtext); margin-top: 2px; }
-.nt-tl-row.hl .nt-tl-dot { background: var(--point); border-color: var(--point); width: 18px; height: 18px; left: 11px; top: 18px; }
+.nt-tl-axis::before { content: ''; position: absolute; left: calc(1em - 1px * var(--u)); top: 0; bottom: 0; width: calc(2px * var(--u)); background: var(--divider); }
+.nt-tl-row:first-child .nt-tl-axis::before { top: 1.2em; }
+.nt-tl-row:last-child .nt-tl-axis::before { bottom: calc(100% - 1.3em); }
+.nt-tl-dot { position: absolute; left: 0.65em; top: 1em; width: 0.7em; height: 0.7em; border-radius: 50%; background: #fff; border: calc(3px * var(--u)) solid var(--baseDark); }
+.nt-tl-text { font-size: var(--body-size); color: var(--text); padding: 0.6em 0; line-height: 1.45; }
+.nt-tl-text .d { display: block; font-size: var(--source-size); color: var(--subtext); margin-top: 0.15em; }
+.nt-tl-row.hl .nt-tl-dot { background: var(--point); border-color: var(--point); width: 0.9em; height: 0.9em; left: 0.55em; top: 0.9em; }
 .nt-tl-row.hl .nt-tl-date { color: var(--pointDark); }
 .nt-tl-row.hl .nt-tl-text { font-weight: 700; color: var(--ink); }
 .nt-tl-row.hl .nt-tl-text b { background: linear-gradient(transparent 55%, var(--pointTint) 55%); }
-.nt-tl-group { font-size: 18px; font-weight: 700; color: var(--subtext); padding: 18px 0 6px; grid-column: 1 / -1; }
+.nt-tl-group { font-size: var(--legend-size); font-weight: 700; color: var(--subtext); padding: 1em 0 0.35em; grid-column: 1 / -1; }
 
 /* stat */
-.nt-stats { display: grid; gap: 0; background: var(--panel); border-radius: 4px; padding: 30px 8px; }
-.nt-stat { text-align: center; padding: 0 12px; }
-.nt-stat + .nt-stat { border-left: 1px solid var(--divider); }
+.nt-stats { display: grid; gap: 0; background: var(--panel); border-radius: calc(4px * var(--u)); padding: calc(30px * var(--u)) calc(8px * var(--u)); }
+.nt-stat { text-align: center; padding: 0 calc(12px * var(--u)); }
+.nt-stat + .nt-stat { border-left: calc(1px * var(--u)) solid var(--divider); }
 .nt-stat .l { font-size: var(--kpiLabel-size); font-weight: 500; color: var(--baseDark); }
-.nt-stat .v { white-space: nowrap; min-height: 62px; display: flex; align-items: center; justify-content: center; font-size: var(--kpiValue-size); font-weight: 800; color: var(--ink); margin-top: 6px; letter-spacing: -0.02em; line-height: 1.15; }
-.nt-stat .v small { font-size: 0.55em; font-weight: 700; margin-left: 2px; align-self: flex-end; margin-bottom: 0.32em; }
-.nt-stat .s { font-size: 17px; color: var(--subtext); margin-top: 6px; }
+.nt-stat .v { white-space: nowrap; min-height: calc(var(--kpiValue-size) * 1.15); display: flex; align-items: center; justify-content: center; font-size: var(--kpiValue-size); font-weight: 800; color: var(--ink); margin-top: 0.1em; letter-spacing: -0.02em; line-height: 1.15; }
+.nt-stat .v small { font-size: 0.55em; font-weight: 700; margin-left: 0.05em; align-self: flex-end; margin-bottom: 0.32em; }
+.nt-stat .s { font-size: var(--source-size); color: var(--subtext); margin-top: 0.35em; }
 .nt-stat.hl .l, .nt-stat.hl .v { color: var(--point); }
 
 svg text { font-family: var(--font); }

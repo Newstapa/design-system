@@ -9,19 +9,20 @@
 
   // 공통 디자인 값. path는 tokens.json 안의 위치. {ACC}는 지금 고른 강조색 이름으로 바뀐다.
   var GROUPS = [
-    { title: '글자 크기', note: '가로 1000px 그래픽 기준', rows: [
-      { label: '제목', path: 'font.title.size', min: 24, max: 64, step: 1, unit: 'px' },
+    { title: '글자 크기', note: '가로 1200px 그래픽 기준', rows: [
+      { label: '제목', path: 'font.title.size', min: 30, max: 80, step: 1, unit: 'px' },
       { label: '제목 굵기', path: 'font.title.weight', min: 500, max: 900, step: 100 },
-      { label: '부제', path: 'font.subtitle.size', min: 14, max: 36, step: 1, unit: 'px' },
-      { label: '항목 라벨', path: 'font.label.size', min: 12, max: 28, step: 1, unit: 'px' },
-      { label: '값 라벨', path: 'font.dataLabel.size', min: 12, max: 32, step: 1, unit: 'px' },
-      { label: '축 눈금', path: 'font.axis.size', min: 11, max: 24, step: 1, unit: 'px' },
-      { label: '범례', path: 'font.legend.size', min: 12, max: 26, step: 1, unit: 'px' },
-      { label: '표 머리', path: 'font.tableHead.size', min: 12, max: 26, step: 1, unit: 'px' },
-      { label: '표 본문', path: 'font.tableCell.size', min: 12, max: 28, step: 1, unit: 'px' },
-      { label: '숫자 카드 값', path: 'font.kpiValue.size', min: 28, max: 80, step: 1, unit: 'px' },
-      { label: '숫자 카드 이름', path: 'font.kpiLabel.size', min: 12, max: 28, step: 1, unit: 'px' },
-      { label: '출처·주석', path: 'font.source.size', min: 11, max: 24, step: 1, unit: 'px' }
+      { label: '부제', path: 'font.subtitle.size', min: 16, max: 44, step: 1, unit: 'px' },
+      { label: '본문(타임라인)', path: 'font.body.size', min: 16, max: 40, step: 1, unit: 'px' },
+      { label: '항목 라벨', path: 'font.label.size', min: 14, max: 36, step: 1, unit: 'px' },
+      { label: '값 라벨', path: 'font.dataLabel.size', min: 14, max: 40, step: 1, unit: 'px' },
+      { label: '축 눈금', path: 'font.axis.size', min: 12, max: 32, step: 1, unit: 'px' },
+      { label: '범례', path: 'font.legend.size', min: 14, max: 34, step: 1, unit: 'px' },
+      { label: '표 머리', path: 'font.tableHead.size', min: 14, max: 34, step: 1, unit: 'px' },
+      { label: '표 본문', path: 'font.tableCell.size', min: 14, max: 36, step: 1, unit: 'px' },
+      { label: '숫자 카드 값', path: 'font.kpiValue.size', min: 36, max: 100, step: 1, unit: 'px' },
+      { label: '숫자 카드 이름', path: 'font.kpiLabel.size', min: 14, max: 36, step: 1, unit: 'px' },
+      { label: '출처·주석', path: 'font.source.size', min: 12, max: 32, step: 1, unit: 'px' }
     ] },
     { title: '색', note: '강조색은 지금 고른 강조색 세트에 적용', rows: [
       { label: '강조', path: 'accents.{ACC}.point', type: 'color' },
@@ -31,13 +32,13 @@
       { label: '제목·본문 글자', path: 'color.ink', type: 'color' },
       { label: '부제·축·출처 글자', path: 'color.subtext', type: 'color' }
     ] },
-    { title: '여백·크기', note: '저장 가로 = 설계 너비 × 저장 배율', rows: [
+    { title: '여백·크기', note: '저장 가로 = 그래픽 너비 × 저장 배율', rows: [
       { label: '저장 배율', path: 'canvas.scale', min: 1, max: 3, step: 0.1, unit: '×' },
-      { label: '설계 너비', path: 'canvas.width', min: 600, max: 1400, step: 10, unit: 'px' },
-      { label: '위 여백', path: 'canvas.padding.top', min: 0, max: 100, step: 2, unit: 'px' },
-      { label: '좌우 여백', path: 'canvas.padding.side', min: 0, max: 100, step: 2, unit: 'px' },
-      { label: '아래 여백', path: 'canvas.padding.bottom', min: 0, max: 100, step: 2, unit: 'px' },
-      { label: '로고 너비', path: 'logo.width', min: 50, max: 200, step: 2, unit: 'px' },
+      { label: '그래픽 너비', path: 'canvas.width', min: 800, max: 1600, step: 10, unit: 'px' },
+      { label: '위 여백', path: 'canvas.padding.top', min: 0, max: 120, step: 2, unit: 'px' },
+      { label: '좌우 여백', path: 'canvas.padding.side', min: 0, max: 120, step: 2, unit: 'px' },
+      { label: '아래 여백', path: 'canvas.padding.bottom', min: 0, max: 120, step: 2, unit: 'px' },
+      { label: '로고 너비', path: 'logo.width', min: 60, max: 240, step: 2, unit: 'px' },
       { label: '로고 진하기', path: 'logo.opacity', min: 0.1, max: 1, step: 0.02 }
     ] }
   ];
@@ -46,10 +47,10 @@
   function specRows(spec, eff) {
     if (!spec || !spec.type) return [];
     var t = spec.type, rows = [];
-    if (t === 'bar' && !spec.series && spec.orientation !== 'vertical') rows.push({ label: '막대 두께', key: 'barHeight', min: 14, max: 60, step: 1, def: 30, unit: 'px' });
-    if ((t === 'bar' && spec.orientation === 'vertical') || t === 'line') rows.push({ label: '그래프 높이', key: 'plotHeight', min: 200, max: 800, step: 10, def: 400, unit: 'px' });
-    if (t === 'slope') rows.push({ label: '그래프 높이', key: 'plotHeight', min: 200, max: 800, step: 10, def: 440, unit: 'px' });
-    if (t === 'table') rows.push({ label: '표 글자 크기', key: 'fontSize', min: 12, max: 28, step: 1, def: eff.font.tableCell.size, unit: 'px' });
+    if (t === 'bar' && !spec.series && spec.orientation !== 'vertical') rows.push({ label: '막대 두께', key: 'barHeight', min: 16, max: 72, step: 1, def: 36, unit: 'px' });
+    if ((t === 'bar' && spec.orientation === 'vertical') || t === 'line') rows.push({ label: '그래프 높이', key: 'plotHeight', min: 240, max: 960, step: 10, def: 480, unit: 'px' });
+    if (t === 'slope') rows.push({ label: '그래프 높이', key: 'plotHeight', min: 240, max: 960, step: 10, def: 528, unit: 'px' });
+    if (t === 'table') rows.push({ label: '표 글자 크기', key: 'fontSize', min: 14, max: 36, step: 1, def: eff.font.tableCell.size, unit: 'px' });
     return rows;
   }
 

@@ -4,7 +4,7 @@
 사용법:
   python3 scripts/render.py spec.json -o out.jpg [--svg out.svg] [--pdf out.pdf] [--html out.html] [--scale 1.2]
 
-- 저장 가로 크기 = tokens.json의 canvas.width(설계 기준 1000) × canvas.scale(1.2) = 1200px
+- 저장 가로 크기 = tokens.json의 canvas.width(1200) × canvas.scale(1)
 
 - --svg: 어도비 일러스트레이터에서 글자·도형을 고칠 수 있는 SVG (맥에 Pretendard 설치 필요)
 - --pdf: 같은 내용의 벡터 PDF
