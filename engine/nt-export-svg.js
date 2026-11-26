@@ -26,7 +26,8 @@
   function visible(cs) { return cs.display !== 'none' && cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0; }
   function transparent(c) { return !c || c === 'transparent' || /rgba\([^)]*,\s*0\)$/.test(c); }
 
-  function toSVG(frame) {
+  function toSVG(frame, scale) {
+    scale = scale || 1;
     var F = frame.getBoundingClientRect(), W = Math.round(F.width), H = Math.round(F.height);
     var out = [];
     var X = function (v) { return n(v - F.left); }, Y = function (v) { return n(v - F.top); };
@@ -134,7 +135,8 @@
 
     out.push('<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#FFFFFF"/>');
     walk(frame);
-    return '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">\n' + out.join('\n') + '\n</svg>\n';
+    var SW = Math.round(W * scale), SH = Math.round(H * scale);
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + SW + '" height="' + SH + '" viewBox="0 0 ' + SW + ' ' + SH + '">\n' + (scale !== 1 ? '<g transform="scale(' + scale + ')">\n' : '') + out.join('\n') + (scale !== 1 ? '\n</g>' : '') + '\n</svg>\n';
   }
 
   window.NTExport = { toSVG: toSVG };

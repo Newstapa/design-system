@@ -102,7 +102,7 @@
     var frame = mount.firstElementChild; if (!frame) return;
     var prev = scaler.style.transform; scaler.style.transform = 'none';   // 실제 크기에서 위치를 잰다
     try {
-      var svg = NTExport.toSVG(frame), name = fileBase() + '.svg';
+      var svg = NTExport.toSVG(frame, tokens.canvas.scale), name = fileBase() + '.svg';
       download(new Blob([svg], { type: 'image/svg+xml' }), name);
       toast('저장했습니다: ' + name);
     } catch (e) { toast('SVG 저장 실패: ' + (e && e.message || e)); }

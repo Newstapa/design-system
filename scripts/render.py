@@ -2,7 +2,9 @@
 """뉴스타파 그래픽 렌더러: spec JSON → JPG
 
 사용법:
-  python3 scripts/render.py spec.json -o out.jpg [--svg out.svg] [--pdf out.pdf] [--html out.html] [--scale 2]
+  python3 scripts/render.py spec.json -o out.jpg [--svg out.svg] [--pdf out.pdf] [--html out.html] [--scale 1.2]
+
+- 저장 가로 크기 = tokens.json의 canvas.width(설계 기준 1000) × canvas.scale(1.2) = 1200px
 
 - --svg: 어도비 일러스트레이터에서 글자·도형을 고칠 수 있는 SVG (맥에 Pretendard 설치 필요)
 - --pdf: 같은 내용의 벡터 PDF
@@ -82,11 +84,11 @@ def main():
             el.screenshot(path=str(out))
         box = el.bounding_box()
         if a.svg:
-            pathlib.Path(a.svg).write_text(pg.evaluate("NTExport.toSVG(document.getElementById('nt-frame'))"), encoding="utf-8")
+            pathlib.Path(a.svg).write_text(pg.evaluate(f"NTExport.toSVG(document.getElementById('nt-frame'), {scale})"), encoding="utf-8")
             print(f"저장: {a.svg}")
         if a.pdf:
             pg.add_style_tag(content="html,body{margin:0;padding:0} #mount{width:max-content}")
-            pg.pdf(path=a.pdf, width=f"{int(box['width'])}px", height=f"{int(box['height']) + 1}px", print_background=True, page_ranges="1")
+            pg.pdf(path=a.pdf, width=f"{int(box['width'] * scale)}px", height=f"{int(box['height'] * scale) + 1}px", print_background=True, page_ranges="1", scale=min(2, scale))
             print(f"저장: {a.pdf}")
         b.close()
 

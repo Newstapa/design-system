@@ -31,8 +31,9 @@
       { label: '제목·본문 글자', path: 'color.ink', type: 'color' },
       { label: '부제·축·출처 글자', path: 'color.subtext', type: 'color' }
     ] },
-    { title: '여백·크기', rows: [
-      { label: '그래픽 너비', path: 'canvas.width', min: 600, max: 1400, step: 10, unit: 'px' },
+    { title: '여백·크기', note: '저장 가로 = 설계 너비 × 저장 배율', rows: [
+      { label: '저장 배율', path: 'canvas.scale', min: 1, max: 3, step: 0.1, unit: '×' },
+      { label: '설계 너비', path: 'canvas.width', min: 600, max: 1400, step: 10, unit: 'px' },
       { label: '위 여백', path: 'canvas.padding.top', min: 0, max: 100, step: 2, unit: 'px' },
       { label: '좌우 여백', path: 'canvas.padding.side', min: 0, max: 100, step: 2, unit: 'px' },
       { label: '아래 여백', path: 'canvas.padding.bottom', min: 0, max: 100, step: 2, unit: 'px' },
