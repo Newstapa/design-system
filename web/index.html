@@ -4,13 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.9.1">
-<link rel="stylesheet" href="app.css?v=0.9.1">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.10.0">
+<link rel="stylesheet" href="app.css?v=0.10.0">
 </head>
 <body>
-<header class="app-header">
-  <h1>뉴스타파 그래픽 렌더러</h1>
-  <p>AI가 만든 JSON을 붙여넣으면 뉴스타파 디자인 가이드대로 그래픽을 만듭니다.</p>
+<header class="topbar">
+  <div class="brand">
+    <img class="brand-logo" src="../assets/newstapa-logo.svg" alt="뉴스타파">
+    <div class="brand-text">
+      <h1>그래픽 렌더러</h1>
+      <p>AI가 만든 JSON을 붙여넣으면 뉴스타파 디자인 가이드대로 그래픽을 만듭니다.</p>
+    </div>
+  </div>
+  <nav class="topnav">
+    <a class="pill-link" href="https://github.com/Newstapa/design-system/blob/main/guide.md" target="_blank" rel="noopener">디자인 가이드</a>
+    <a class="pill-link" href="https://github.com/Newstapa/design-system" target="_blank" rel="noopener">GitHub</a>
+  </nav>
 </header>
 
 <section class="steps">
@@ -96,9 +105,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.9.1"></script>
-<script src="../engine/nt-export-svg.js?v=0.9.1"></script>
-<script src="tuner.js?v=0.9.1"></script>
-<script src="app.js?v=0.9.1"></script>
+<script src="../engine/nt-graphic.js?v=0.10.0"></script>
+<script src="../engine/nt-export-svg.js?v=0.10.0"></script>
+<script src="tuner.js?v=0.10.0"></script>
+<script src="app.js?v=0.10.0"></script>
 </body>
 </html>
