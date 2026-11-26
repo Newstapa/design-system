@@ -157,6 +157,10 @@
     sel.addEventListener('change', function () { loadExample(sel.value); });
     specEl.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(render, 300); });
     saveBtn.addEventListener('click', save);
+    $('saveLogo').addEventListener('click', async function () {
+      try { download(await (await fetch(BASE + 'assets/newstapa-logo.svg')).blob(), 'newstapa-logo.svg'); toast('뉴스타파 로고 SVG를 저장했습니다.'); }
+      catch (e) { toast('로고 저장 실패: ' + (e && e.message || e)); }
+    });
     svgBtn.addEventListener('click', saveSvg);
     $('copyPrompt').addEventListener('click', copyPrompt);
     $('copyFull').addEventListener('click', copyFull);
