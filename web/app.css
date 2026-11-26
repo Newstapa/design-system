@@ -51,7 +51,7 @@ body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -appl
 .topnav { align-items: center; }
 
 /* 스킬 적용 방법 팝업 */
-.modal { margin: auto; width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: 0; border-radius: var(--radius-card); background: var(--card); color: var(--text); box-shadow: 0 24px 64px rgba(16, 24, 40, 0.24); overflow: hidden; }
+.modal { margin: auto; width: min(480px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: 0; border-radius: var(--radius-card); background: var(--card); color: var(--text); box-shadow: 0 24px 64px rgba(16, 24, 40, 0.24); overflow: hidden; }
 .modal[open] { display: flex; flex-direction: column; }
 .modal::backdrop { background: rgba(16, 18, 22, 0.45); }
 .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px 24px 8px; }
@@ -60,13 +60,15 @@ body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -appl
 .modal-body { padding: 8px 24px 8px; overflow-y: auto; }
 .modal-lead { font-size: 15px; color: var(--sub); line-height: 1.65; }
 .modal-lead b { color: var(--text); }
-.howto { list-style: none; counter-reset: step; margin: 18px 0 4px; display: flex; flex-direction: column; gap: 14px; }
+.howto { list-style: none; counter-reset: step; margin: 4px 0 0; display: flex; flex-direction: column; gap: 20px; }
 .howto li { counter-increment: step; position: relative; padding-left: 46px; display: flex; flex-direction: column; gap: 3px; }
 .howto li::before { content: counter(step); position: absolute; left: 0; top: -2px; width: 32px; height: 32px; border-radius: 50%; background: var(--soft); font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
 .howto b { font-size: 15px; font-weight: 700; }
 .howto span { font-size: 14px; color: var(--sub); line-height: 1.6; }
 .howto em, .modal-note em { font-style: normal; font-weight: 600; color: var(--text); background: var(--soft); padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
 .howto code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; background: var(--code-bg); color: var(--code-text); padding: 2px 7px; border-radius: 6px; }
+.howto .say { align-self: flex-start; margin-top: 6px; padding: 8px 16px; border-radius: 12px; background: #FFF1EA; color: var(--accent); font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.modal-tip { margin-top: 20px; font-size: 13px; color: var(--faint); }
 .modal-note { margin-top: 14px; padding: 14px 16px; border-radius: 14px; background: var(--soft); font-size: 14px; color: var(--sub); line-height: 1.6; }
 .modal-note b { color: var(--text); margin-right: 4px; }
 .modal-note a { color: var(--text); font-weight: 600; }
