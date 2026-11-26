@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.7.0">
-<link rel="stylesheet" href="app.css?v=0.7.0">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.7.1">
+<link rel="stylesheet" href="app.css?v=0.7.1">
 </head>
 <body>
 <header class="app-header">
@@ -62,7 +62,14 @@
 
   <section class="card pane preview">
     <div class="pane-head">
-      <h2>기사 미리보기 <span id="sizeInfo" class="size-info"></span></h2>
+      <div class="preview-title">
+        <h2>기사 미리보기</h2>
+        <div class="tabs" role="tablist" aria-label="미리보기 화면">
+          <button class="tab view-tab active" type="button" role="tab" data-view="pc" aria-selected="true">PC</button>
+          <button class="tab view-tab" type="button" role="tab" data-view="mobile" aria-selected="false">모바일</button>
+        </div>
+        <span id="sizeInfo" class="size-info"></span>
+      </div>
       <div class="row-btns">
         <button id="saveSvg" class="btn" disabled title="어도비 일러스트레이터에서 글자·도형을 고칠 수 있는 파일">SVG 저장 (일러스트용)</button>
         <button id="save" class="btn primary" disabled>JPG 저장</button>
@@ -88,9 +95,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.7.0"></script>
-<script src="../engine/nt-export-svg.js?v=0.7.0"></script>
-<script src="tuner.js?v=0.7.0"></script>
-<script src="app.js?v=0.7.0"></script>
+<script src="../engine/nt-graphic.js?v=0.7.1"></script>
+<script src="../engine/nt-export-svg.js?v=0.7.1"></script>
+<script src="tuner.js?v=0.7.1"></script>
+<script src="app.js?v=0.7.1"></script>
 </body>
 </html>

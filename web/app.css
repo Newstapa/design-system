@@ -109,13 +109,16 @@ body { color: var(--foreground); font-family: 'Pretendard Variable', Pretendard,
 .messages ul { padding-left: 18px; color: #A16207; }
 .messages ul li + li { margin-top: 4px; }
 .messages .warn-title { color: #A16207; font-weight: 600; margin-bottom: 4px; }
-.size-info { margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--muted-foreground); }
+.preview-title { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.size-info { margin-left: 0; font-size: 13px; font-weight: 400; color: var(--muted-foreground); }
 .row-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* 기사 미리보기 — 뉴스타파 기사 본문 폭 760px, 좌우 여백 15px */
 .stage { background: #FFFFFF; padding: 32px 16px; overflow: hidden; }
-.article-mock { max-width: 760px; margin: 0 auto; padding: 0 15px; background: #FFFFFF; font-size: 17px; line-height: 1.85; color: #333; }
+.article-mock { transition: max-width .2s; max-width: 760px; margin: 0 auto; padding: 0 15px; background: #FFFFFF; font-size: 17px; line-height: 1.85; color: #333; }
 .article-mock p { margin: 0 0 24px; word-break: keep-all; }
+/* 모바일 기사 화면: 폭 375px(아이폰 기준), 좌우 여백 15px */
+.article-mock.is-mobile { max-width: 375px; font-size: 16px; line-height: 1.8; border: 1px solid var(--border); border-radius: 24px; padding-top: 28px; padding-bottom: 12px; }
 .article-mock .kicker { font-size: 12px; color: var(--muted-foreground); margin-bottom: 16px; }
 .graphic { position: relative; margin: 32px 0; min-height: 240px; }
 .scaler { transform-origin: top left; width: 1000px; }

@@ -161,6 +161,16 @@
     $('copyPrompt').addEventListener('click', copyPrompt);
     $('copyFull').addEventListener('click', copyFull);
     window.addEventListener('resize', fit);
+    // PC / 모바일 미리보기 전환
+    var article = document.querySelector('.article-mock');
+    function setView(v) {
+      article.classList.toggle('is-mobile', v === 'mobile');
+      document.querySelectorAll('.view-tab').forEach(function (x) { var on = x.getAttribute('data-view') === v; x.classList.toggle('active', on); x.setAttribute('aria-selected', on); });
+      try { localStorage.setItem('nt-preview-view', v); } catch (e) {}
+      fit(); setTimeout(fit, 250);
+    }
+    document.querySelectorAll('.view-tab').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
+    try { if (localStorage.getItem('nt-preview-view') === 'mobile') setView('mobile'); } catch (e) {}
     baseTokens = await (await fetch(BASE + 'assets/tokens.json')).json();
     tokens = baseTokens;
     NTTuner.init({
@@ -179,9 +189,9 @@
     });
     tokens = NTTuner.effective();
     NTTuner.refreshSpec(null);
-    document.querySelectorAll('.tab').forEach(function (b) {
+    document.querySelectorAll('.tab[data-tab]').forEach(function (b) {
       b.addEventListener('click', function () {
-        document.querySelectorAll('.tab').forEach(function (x) { var on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-selected', on); });
+        document.querySelectorAll('.tab[data-tab]').forEach(function (x) { var on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-selected', on); });
         $('tab-json').hidden = b.getAttribute('data-tab') !== 'json';
         $('tab-tune').hidden = b.getAttribute('data-tab') !== 'tune';
       });
