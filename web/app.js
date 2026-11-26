@@ -165,6 +165,11 @@
     $('copyPrompt').addEventListener('click', copyPrompt);
     $('copyFull').addEventListener('click', copyFull);
     window.addEventListener('resize', fit);
+    // 스킬 적용 방법 팝업
+    var dlg = $('skillDialog');
+    $('skillInfo').addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
+    dlg.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', function () { dlg.close(); }); });
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });   // 바깥(어두운 배경) 누르면 닫기
     // PC / 모바일 미리보기 전환
     var article = document.querySelector('.article-mock');
     function setView(v) {

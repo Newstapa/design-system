@@ -23,8 +23,9 @@ body { -webkit-font-smoothing: antialiased; }
 }
 .nt-logo { position: absolute; }
 .nt-header { padding-right: calc(130px * var(--u)); }
-.nt-rule-top { height: calc(2px * var(--u)); background: var(--rule); margin-bottom: calc(24px * var(--u)); }
-.nt-rule-bottom { height: calc(1px * var(--u)); background: var(--rule); margin-top: calc(22px * var(--u)); }
+/* 위아래 선은 좌우 여백을 무시하고 그래픽 전체 폭으로 */
+.nt-rule-top { height: calc(2px * var(--u)); background: var(--rule); margin: 0 calc(var(--pad-side, 0px) * -1) calc(24px * var(--u)); }
+.nt-rule-bottom { height: calc(1px * var(--u)); background: var(--rule); margin: calc(22px * var(--u)) calc(var(--pad-side, 0px) * -1) 0; }
 .nt-legend.text { gap: calc(8px * var(--u)) calc(28px * var(--u)); font-weight: 700; }
 .nt-legend.text i { display: inline-block; box-sizing: border-box; }
 .nt-title {

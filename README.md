@@ -8,6 +8,7 @@
 | 무엇 | 주소 |
 |---|---|
 | 웹 렌더러 (JSON → JPG·SVG) | https://newstapa.github.io/design-system/web/ |
+| Claude 스킬 (zip) | https://newstapa.github.io/design-system/downloads/newstapa-graphics.zip |
 | 디자인 가이드 | https://github.com/Newstapa/design-system/blob/main/guide.md |
 | AI가 읽는 지침 (원문) | https://raw.githubusercontent.com/Newstapa/design-system/main/guide.md |
 | ChatGPT·Gemini 지침 칸에 넣을 문구 | https://github.com/Newstapa/design-system/blob/main/for-ai/custom-instructions.md |
