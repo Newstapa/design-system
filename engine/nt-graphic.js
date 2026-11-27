@@ -634,6 +634,32 @@
     body.appendChild(box);
   }
 
+  // ---------- 텍스트 강조 (안내문·수칙·핵심 문장) ----------
+  // 차트 없이 제목을 크게, 아래 내용은 흰 상자에. 문장 안 **강조**는 형광펜처럼 표시.
+  function mark(t) { return esc(t).replace(/\*\*(.+?)\*\*/g, '<b class="mk">$1</b>').replace(/\n/g, '<br>'); }
+  function renderText(spec, body) {
+    var items = spec.items || [], numbered = spec.numbered !== false;
+    if (items.length > 6) warn('항목이 ' + items.length + '개입니다. 6개 이하를 권장합니다.');
+    var box = h('div', { class: 'nt-textbox' });
+    if (spec.lead) box.appendChild(h('div', { class: 'nt-text-lead' }, mark(spec.lead)));
+    if (items.length) {
+      var list = h('ol', { class: 'nt-text-items' + (numbered ? '' : ' bullets') });
+      items.forEach(function (it, i) {
+        if (typeof it === 'string') it = { text: it };
+        var li = h('li', { class: it.highlight ? 'hl' : '' });
+        li.appendChild(h('span', { class: 'n' }, numbered ? String(i + 1) : ''));
+        var c = h('div', { class: 'c' });
+        if (it.heading) c.appendChild(h('div', { class: 'hd' }, mark(it.heading)));
+        if (it.text) c.appendChild(h('div', { class: 'tx' }, mark(it.text)));
+        li.appendChild(c); list.appendChild(li);
+      });
+      box.appendChild(list);
+    }
+    if (spec.closing) box.appendChild(h('div', { class: 'nt-text-closing' }, mark(spec.closing)));
+    if (!spec.lead && !items.length && !spec.closing) warn('lead, items, closing 중 하나는 넣으세요.');
+    body.appendChild(box);
+  }
+
   // ---------- 조합 ----------
   function renderStack(spec, body) {
     spec.blocks.forEach(function (b, i) {
@@ -643,7 +669,7 @@
     });
   }
 
-  var RENDER = { dot: renderDot, slope: renderSlope, bar: renderBar, line: renderLine, pie: renderPie, table: renderTable, timeline: renderTimeline, map: renderMap, stat: renderStat, stack: renderStack };
+  var RENDER = { dot: renderDot, slope: renderSlope, bar: renderBar, line: renderLine, pie: renderPie, table: renderTable, timeline: renderTimeline, map: renderMap, stat: renderStat, text: renderText, stack: renderStack };
 
   // ---------- 디자이너에게 넘기는 유형 ----------
   // 아래 유형은 AI·엔진으로 만들지 않고 디자이너에게 요청한다 (guide.md 6장).
@@ -663,7 +689,7 @@
 
   // ---------- 진입점 ----------
   function render(spec, tokens, mount) {
-    T = JSON.parse(JSON.stringify(tokens)); C = T.color; F = T.font; warnings = [];
+    T = JSON.parse(JSON.stringify(tokens)); C = T.color; F = T.font; warnings = []; if (!C.surface) C.surface = '#FFFFFF';
     var dOnly = designerOnly(spec);
     if (dOnly) { var de = new Error(designerMessage(dOnly)); de.designer = dOnly; throw de; }
     // 강조색 세트 적용 (tokens.accents 에 등록된 것만)
@@ -679,7 +705,7 @@
     if (!F.body) F.body = { size: F.tableCell.size + 1 };
     var root = document.documentElement.style;
     root.setProperty('--font', F.family); root.setProperty('--bg', C.background);
-    ['point', 'pointDark', 'pointTint', 'ink', 'text', 'subtext', 'baseDark', 'divider', 'rule', 'panel'].forEach(function (k) { root.setProperty('--' + k, C[k]); });
+    ['point', 'pointDark', 'pointTint', 'ink', 'text', 'subtext', 'baseDark', 'divider', 'rule', 'panel', 'surface'].forEach(function (k) { root.setProperty('--' + k, C[k]); });
     root.setProperty('--title-size', F.title.size + 'px'); root.setProperty('--title-weight', F.title.weight);
     root.setProperty('--title-lh', F.title.lineHeight); root.setProperty('--title-ls', F.title.letterSpacing);
     root.setProperty('--subtitle-size', F.subtitle.size + 'px'); root.setProperty('--subtitle-weight', F.subtitle.weight);
@@ -692,13 +718,13 @@
 
     if (!spec.title) warn('제목(title)이 없습니다.');
     else if (spec.title.replace(/\n/g, '').length > T.limits.titleMaxChars) warn('제목이 ' + spec.title.length + '자입니다. ' + T.limits.titleMaxChars + '자 이내로 줄이거나 부제로 나누세요.');
-    if (!spec.source) warn('출처(source)가 없습니다. 반드시 넣으세요.');
-    if (!RENDER[spec.type]) throw new Error('지원하지 않는 type: ' + spec.type + ' (bar, line, pie, table, stat, stack). 그 밖의 유형은 디자이너에게 문의해 주세요.');
+    if (!spec.source && spec.type !== 'text') warn('출처(source)가 없습니다. 반드시 넣으세요.');
+    if (!RENDER[spec.type]) throw new Error('지원하지 않는 type: ' + spec.type + ' (bar, line, pie, table, stat, text, stack). 그 밖의 유형은 디자이너에게 문의해 주세요.');
 
     var RL = T.rules || { top: { visible: true, width: 2 }, bottom: { visible: true, width: 1 } };
     var ruleH = function (r) { return r ? Math.max(0, Number(r.width) || 0) : 0; };
     var ruleS = function (r) { return 'height:' + ruleH(r) + 'px' + (r && r.visible === false ? ';background:transparent' : ''); };
-    var frame = h('div', { class: 'nt-frame', id: 'nt-frame', style: 'width:' + cw + 'px;padding:' + pad.top + 'px ' + pad.side + 'px ' + pad.bottom + 'px;--pad-side:' + pad.side + 'px' });
+    var frame = h('div', { class: 'nt-frame nt-type-' + spec.type, id: 'nt-frame', style: 'width:' + cw + 'px;padding:' + pad.top + 'px ' + pad.side + 'px ' + pad.bottom + 'px;--pad-side:' + pad.side + 'px' });
     if (spec.logo !== false) {
       var lg = h('img', { class: 'nt-logo', src: window.NT_LOGO_SRC, style: 'width:' + T.logo.width + 'px;opacity:' + T.logo.opacity + ';right:' + (T.logo.right != null ? T.logo.right : pad.side) + 'px;top:' + (pad.top + ruleH(RL.top) + u(24) + F.title.size * 0.08) + 'px' });
       frame.appendChild(lg);

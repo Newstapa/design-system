@@ -7,7 +7,7 @@
   var BASE = '../';
   var EXAMPLES = [
     ['bar-horizontal', '가로 막대'], ['bar-vertical', '세로 막대'], ['line', '꺾은선'],
-    ['line-multi', '꺾은선 여러 개'], ['pie', '원그래프'], ['table', '표'], ['stat-table', '숫자 카드 + 표']
+    ['line-multi', '꺾은선 여러 개'], ['pie', '원그래프'], ['table', '표'], ['stat-table', '숫자 카드 + 표'], ['text', '텍스트 강조']
   ];
   var SPEC_URL = 'https://raw.githubusercontent.com/Newstapa/design-system/main/for-ai/json-spec.md';
   var SHORT_PROMPT = '아래 주소의 뉴스타파 그래픽 지침을 읽고, 그 형식에 맞는 JSON을 만들어 주세요.\n' + SPEC_URL + '\n\n[기사 또는 데이터]\n';

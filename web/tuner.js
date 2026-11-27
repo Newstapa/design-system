@@ -27,6 +27,7 @@
     { title: '색', note: '강조색은 지금 고른 강조색 세트에 적용', rows: [
       { label: '그래픽 배경', path: 'color.background', type: 'color' },
       { label: '숫자 카드 상자', path: 'color.panel', type: 'color' },
+      { label: '텍스트 강조 상자', path: 'color.surface', type: 'color' },
       { label: '강조', path: 'accents.{ACC}.point', type: 'color' },
       { label: '강조 글자', path: 'accents.{ACC}.pointDark', type: 'color' },
       { label: '강조 배경', path: 'accents.{ACC}.pointTint', type: 'color' },
