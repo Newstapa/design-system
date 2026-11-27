@@ -18,3 +18,4 @@
   `for f in examples/*.json; do python3 scripts/render.py "$f" -o "/tmp/$(basename "$f" .json).jpg"; done`
 - Tapa Chart(`web/`)를 고치면 데스크톱과 모바일 너비에서 화면을 확인합니다.
 - 바꾼 내용은 `CHANGELOG.md`에 적고 `assets/tokens.json`의 `version`을 올립니다.
+- `skills/newstapa-graphics/SKILL.md`는 되도록 고치지 않습니다. 이미 등록한 사람은 zip을 다시 올려야 바뀌기 때문입니다. 유형 목록·규칙·디자인 값은 SKILL.md가 아니라 `guide.md`, `for-ai/json-spec.md`, `assets/tokens.json`에 적습니다(스킬이 실행할 때마다 GitHub에서 읽어 옴). SKILL.md는 "최신본 받기 → 지침 읽기 → 렌더" 절차를 바꿀 때만 고칩니다.
