@@ -5,7 +5,7 @@
   src: url('../assets/fonts/PretendardVariable.woff2') format('woff2-variations');
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: #fff; }
+html, body { background: var(--bg, #fff); }
 body { -webkit-font-smoothing: antialiased; }
 
 /* 치수 규칙
@@ -72,7 +72,7 @@ body { -webkit-font-smoothing: antialiased; }
 .nt-tl-axis::before { content: ''; position: absolute; left: calc(1em - 1px * var(--u)); top: 0; bottom: 0; width: calc(2px * var(--u)); background: var(--divider); }
 .nt-tl-row:first-child .nt-tl-axis::before { top: 1.2em; }
 .nt-tl-row:last-child .nt-tl-axis::before { bottom: calc(100% - 1.3em); }
-.nt-tl-dot { position: absolute; left: 0.65em; top: 1em; width: 0.7em; height: 0.7em; border-radius: 50%; background: #fff; border: calc(3px * var(--u)) solid var(--baseDark); }
+.nt-tl-dot { position: absolute; left: 0.65em; top: 1em; width: 0.7em; height: 0.7em; border-radius: 50%; background: var(--bg); border: calc(3px * var(--u)) solid var(--baseDark); }
 .nt-tl-text { font-size: var(--body-size); color: var(--text); padding: 0.6em 0; line-height: 1.45; }
 .nt-tl-text .d { display: block; font-size: var(--source-size); color: var(--subtext); margin-top: 0.15em; }
 .nt-tl-row.hl .nt-tl-dot { background: var(--point); border-color: var(--point); width: 0.9em; height: 0.9em; left: 0.55em; top: 0.9em; }

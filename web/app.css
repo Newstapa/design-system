@@ -11,7 +11,7 @@
   --faint: #8C929C;
   --primary: #1C1F24;       /* 주요 버튼 */
   --primary-hover: #33373E;
-  --accent: #FF723D;        /* 뉴스타파 포인트 컬러 (작은 표시에만) */
+  --accent: #FF733C;        /* 뉴스타파 포인트 컬러 (작은 표시에만) */
   --ok: #1F8A5B;
   --warn: #A1620A;
   --err: #D23B32;
@@ -24,13 +24,13 @@
 }
 * { box-sizing: border-box; }
 html, body { background: var(--page); }
-body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; font-size: 15px; line-height: 1.5; }
+body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; font-size: 15px; line-height: 1.5; word-break: keep-all; overflow-wrap: anywhere; }
 
 .card { background: var(--card); border-radius: var(--radius-card); box-shadow: var(--shadow); }
 
 /* 상단 바 */
 .topbar {
-  max-width: 1424px; margin: 20px auto 0; padding: 16px 24px; background: var(--card); border-radius: 999px; box-shadow: var(--shadow);
+  max-width: 1424px; margin: 20px auto 0; padding: 16px 24px; background: var(--card); border-radius: var(--radius-card); box-shadow: var(--shadow);
   display: flex; align-items: center; justify-content: space-between; gap: 16px; width: calc(100% - 56px);
 }
 .brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
@@ -198,7 +198,7 @@ body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -appl
 }
 @media (max-width: 760px) {
   body { font-size: 14px; }
-  .topbar { width: calc(100% - 32px); margin-top: 16px; padding: 14px 18px; border-radius: 22px; flex-direction: column; align-items: flex-start; }
+  .topbar { width: calc(100% - 32px); margin-top: 16px; padding: 14px 18px; border-radius: var(--radius-card); flex-direction: column; align-items: flex-start; }
   .topnav { flex-wrap: wrap; }
   .brand-logo { height: 28px; }
   .brand-text h1 { font-size: 18px; }

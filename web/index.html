@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.10.3">
-<link rel="stylesheet" href="app.css?v=0.10.3">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.11.0">
+<link rel="stylesheet" href="app.css?v=0.11.1">
 </head>
 <body>
 <header class="topbar">
@@ -13,7 +13,7 @@
     <img class="brand-logo" src="../assets/newstapa-logo.svg" alt="뉴스타파">
     <div class="brand-text">
       <h1>그래픽 렌더러</h1>
-      <p>AI가 만든 JSON을 붙여넣으면 뉴스타파 디자인 가이드대로 그래픽을 만듭니다.</p>
+      <p>뉴스타파 디자인 가이드대로 시각화를 합니다.</p>
     </div>
   </div>
   <nav class="topnav">
@@ -30,7 +30,7 @@
   <ol>
     <li class="card">
       <b><i>1</i>AI에게 요청하기</b>
-      <span>지침 주소가 담긴 짧은 요청문을 복사해 AI 대화창에 붙여넣고, 기사를 덧붙이세요.</span>
+      <span>요청문을 복사해 사용 중인 AI 대화창에 붙여넣고, 기사나 데이터를 덧붙이세요.</span>
       <div class="row">
         <button id="copyPrompt" class="btn">요청문 복사</button>
         <button id="copyFull" class="btn ghost" title="주소를 열지 못하는 AI용">전체 지침 복사</button>
@@ -42,8 +42,8 @@
       <span>AI가 준 답을 통째로 아래 JSON 칸에 붙여넣으면 바로 미리보기가 바뀝니다.</span>
     </li>
     <li class="card">
-      <b><i>3</i>확인하고 저장</b>
-      <span>숫자·출처를 확인하고 JPG로 저장하세요. 글자 크기·색을 손보려면 '디자인 조정' 탭을, 일러스트레이터에서 고치려면 SVG 저장을 쓰세요.</span>
+      <b><i>3</i>이미지 저장</b>
+      <span>숫자·출처를 확인하고 JPG로 저장하세요. 디자인을 수정하려면 '디자인 조정' 탭을 선택하세요.</span>
     </li>
   </ol>
 </section>
@@ -140,9 +140,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.10.3"></script>
-<script src="../engine/nt-export-svg.js?v=0.10.3"></script>
-<script src="tuner.js?v=0.10.3"></script>
-<script src="app.js?v=0.10.3"></script>
+<script src="../engine/nt-graphic.js?v=0.11.0"></script>
+<script src="../engine/nt-export-svg.js?v=0.11.0"></script>
+<script src="tuner.js?v=0.11.0"></script>
+<script src="app.js?v=0.11.0"></script>
 </body>
 </html>

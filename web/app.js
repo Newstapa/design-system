@@ -12,8 +12,8 @@
     ['timeline', '타임라인'], ['map', '지도'], ['stat-table', '숫자 카드 + 표']
   ];
   var SPEC_URL = 'https://raw.githubusercontent.com/Newstapa/design-system/main/for-ai/json-spec.md';
-  var SHORT_PROMPT = '아래 주소의 뉴스타파 그래픽 지침을 읽고, 그 형식에 맞는 JSON을 만들어 주세요.\n' + SPEC_URL + '\n\n[기사]\n';
-  var PROMPT_TAIL = '\n\n---\n위 지침에 따라 아래 기사(또는 데이터)로 그래픽 JSON을 만들어 주세요.\n\n[기사]\n';
+  var SHORT_PROMPT = '아래 주소의 뉴스타파 그래픽 지침을 읽고, 그 형식에 맞는 JSON을 만들어 주세요.\n' + SPEC_URL + '\n\n[기사 또는 데이터]\n';
+  var PROMPT_TAIL = '\n\n---\n위 지침에 따라 아래 기사(또는 데이터)로 그래픽 JSON을 만들어 주세요.\n\n[기사 또는 데이터]\n';
 
   var $ = function (id) { return document.getElementById(id); };
   var specEl = $('spec'), msgEl = $('messages'), mount = $('mount'), scaler = $('scaler'), stage = $('stage');
@@ -112,7 +112,7 @@
     var frame = mount.firstElementChild; if (!frame) return;
     saveBtn.disabled = true; saveBtn.textContent = '저장 중…';
     try {
-      var url = await htmlToImage.toJpeg(frame, { quality: tokens.canvas.quality / 100, pixelRatio: tokens.canvas.scale, backgroundColor: '#FFFFFF', cacheBust: false });
+      var url = await htmlToImage.toJpeg(frame, { quality: tokens.canvas.quality / 100, pixelRatio: tokens.canvas.scale, backgroundColor: (tokens.color && tokens.color.background) || '#FFFFFF', cacheBust: false });
       var name = fileBase() + '.jpg', sz = outSize();
       download(await (await fetch(url)).blob(), name);
       toast('저장했습니다: ' + name + ' (가로 ' + sz.w.toLocaleString() + 'px × 세로 ' + sz.h.toLocaleString() + 'px)');

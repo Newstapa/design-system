@@ -304,7 +304,7 @@
       labelLines[i].forEach(function (l, k) { txt(svg, labelW - u(28), cy + (k - (labelLines[i].length - 1) / 2) * F.label.size * 1.3, l, { anchor: 'end', size: F.label.size, weight: hl ? 700 : 500, fill: hl ? C.ink : C.text }); });
       if (Math.abs(xt - xf) > 2 * R + 10) svg.appendChild(s('line', { x1: xf + dir * (R + 2), x2: xt - dir * (R + 4), y1: cy, y2: cy, stroke: hl ? C.pointDark : C.ink, 'stroke-width': u(1.6), 'marker-end': 'url(#' + (hl ? 'ahp' : 'ah') + ')' }));
       svg.appendChild(s('circle', { cx: xf, cy: cy, r: R, fill: '#E6E6E6', stroke: FROM, 'stroke-width': u(2) }));
-      svg.appendChild(s('circle', { cx: xt, cy: cy, r: R, fill: hl ? C.point : TO, stroke: '#fff', 'stroke-width': 1.5 }));
+      svg.appendChild(s('circle', { cx: xt, cy: cy, r: R, fill: hl ? C.point : TO, stroke: C.background, 'stroke-width': 1.5 }));
       var uu = i === 0 || spec.suffixAll ? suf : '';
       var leftIsFrom = xf <= xt;
       txt(svg, (leftIsFrom ? xf : xt) - R - u(8), cy, fmt(leftIsFrom ? r.from : r.to, dec, uu), { anchor: 'end', size: F.dataLabel.size - 1, weight: leftIsFrom ? 500 : 700, fill: leftIsFrom ? '#8A8A8A' : (hl ? C.pointDark : TO) });
@@ -335,7 +335,7 @@
     order.forEach(function (i) {
       var sr = series[i], hl = colors[i] === C.point, a = sy(sr.values[0]), b = sy(sr.values[1]);
       svg.appendChild(s('line', { x1: x0, y1: a, x2: x1, y2: b, stroke: colors[i], 'stroke-width': hl ? u(4.5) : u(2.5), 'stroke-linecap': 'round' }));
-      [[x0, a], [x1, b]].forEach(function (p) { svg.appendChild(s('circle', { cx: p[0], cy: p[1], r: hl ? u(7) : u(5.5), fill: '#fff', stroke: colors[i], 'stroke-width': hl ? u(3.5) : u(2.5) })); });
+      [[x0, a], [x1, b]].forEach(function (p) { svg.appendChild(s('circle', { cx: p[0], cy: p[1], r: hl ? u(7) : u(5.5), fill: C.background, stroke: colors[i], 'stroke-width': hl ? u(3.5) : u(2.5) })); });
       L.push({ y: a, i: i }); Rr.push({ y: b, i: i });
     });
     relax(L); relax(Rr);
@@ -404,7 +404,7 @@
       if (dashI > 0 && sr.values[dashI - 1] != null) d2 = 'M' + sx(dashI - 1).toFixed(1) + ',' + sy(sr.values[dashI - 1]).toFixed(1) + d2.replace(/^M/, 'L');
       svg.appendChild(s('path', { d: d, fill: 'none', stroke: colors[si], 'stroke-width': hl ? u(4) : u(2.5), 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
       if (d2) svg.appendChild(s('path', { d: d2, fill: 'none', stroke: colors[si], 'stroke-width': hl ? u(4) : u(2.5), 'stroke-dasharray': '2 9', 'stroke-linecap': 'round' }));
-      if (hl && n <= 16) sr.values.forEach(function (v, i) { if (v != null) svg.appendChild(s('circle', { cx: sx(i), cy: sy(v), r: u(5), fill: '#fff', stroke: colors[si], 'stroke-width': u(3) })); });
+      if (hl && n <= 16) sr.values.forEach(function (v, i) { if (v != null) svg.appendChild(s('circle', { cx: sx(i), cy: sy(v), r: u(5), fill: C.background, stroke: colors[si], 'stroke-width': u(3) })); });
       if (hl && spec.showValues) {
         // 값 라벨: 10개 이하면 전부, 많으면 처음·최고·최저·지정값만
         var vv = sr.values, idx = [];
@@ -464,7 +464,7 @@
       var a1 = a0 + d.value / total * Math.PI * 2, large = a1 - a0 > Math.PI ? 1 : 0;
       var p = function (a, rr) { return (cx + rr * Math.cos(a)).toFixed(2) + ',' + (cy + rr * Math.sin(a)).toFixed(2); };
       var path = data.length === 1 ? null : 'M' + p(a0, R) + 'A' + R + ',' + R + ' 0 ' + large + ' 1 ' + p(a1, R) + 'L' + p(a1, r) + 'A' + r + ',' + r + ' 0 ' + large + ' 0 ' + p(a0, r) + 'Z';
-      if (path) svg.appendChild(s('path', { d: path, fill: colors[i], stroke: '#fff', 'stroke-width': u(3) }));
+      if (path) svg.appendChild(s('path', { d: path, fill: colors[i], stroke: C.background, 'stroke-width': u(3) }));
       a0 = a1;
     });
     var hi = data.findIndex(function (d, i) { return colors[i] === C.point; });
@@ -577,7 +577,7 @@
       var sn = shortName(f.properties.name), d = '';
       var polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
       polys.forEach(function (poly) { poly.forEach(function (ring) { ring.forEach(function (c, i) { var p = px(c[0], c[1]); d += (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }); d += 'Z'; }); });
-      svg.appendChild(s('path', { d: d, fill: colorOf(sn), stroke: '#FFFFFF', 'stroke-width': u(1.4), 'stroke-linejoin': 'round' }));
+      svg.appendChild(s('path', { d: d, fill: colorOf(sn), stroke: C.background, 'stroke-width': u(1.4), 'stroke-linejoin': 'round' }));
       // 대표점: 가장 큰 고리의 평균
       var big = polys.map(function (p) { return p[0]; }).sort(function (a, b) { return b.length - a.length; })[0];
       var sxv = 0, syv = 0; big.forEach(function (c) { sxv += c[0]; syv += c[1]; }); cent[sn] = [sxv / big.length, syv / big.length];
@@ -594,8 +594,8 @@
         svg.appendChild(s('line', { x1: cp[0], y1: cp[1], x2: lp[0] + (right ? -u(6) : u(6)), y2: lp[1], stroke: C.baseDark, 'stroke-width': u(1) }));
         svg.appendChild(s('circle', { cx: cp[0], cy: cp[1], r: u(3), fill: C.ink }));
         var anc = right ? 'start' : 'end';
-        txt(svg, lp[0], lp[1] - (values[sn] != null ? MN * 0.62 : 0), sn, { anchor: anc, size: MN, weight: 600, fill: C.text, halo: '#fff' });
-        if (values[sn] != null) txt(svg, lp[0], lp[1] + MV * 0.66, fmt(values[sn], dec, suf), { anchor: anc, size: MV, weight: 700, fill: hl.indexOf(sn) >= 0 ? C.pointDark : C.ink, halo: '#fff' });
+        txt(svg, lp[0], lp[1] - (values[sn] != null ? MN * 0.62 : 0), sn, { anchor: anc, size: MN, weight: 600, fill: C.text, halo: C.background });
+        if (values[sn] != null) txt(svg, lp[0], lp[1] + MV * 0.66, fmt(values[sn], dec, suf), { anchor: anc, size: MV, weight: 700, fill: hl.indexOf(sn) >= 0 ? C.pointDark : C.ink, halo: C.background });
       } else {
         txt(svg, lp[0], lp[1] - (values[sn] != null ? MN * 0.62 : 0), sn, { anchor: 'middle', size: MN, weight: 600, fill: col });
         if (values[sn] != null) txt(svg, lp[0], lp[1] + MV * 0.66, fmt(values[sn], dec, suf), { anchor: 'middle', size: MV, weight: 700, fill: col });
