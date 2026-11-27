@@ -158,15 +158,15 @@
   }
 
   // ---------- 디자이너 모드 (로고 2초 길게 누르기) ----------
-  // 디자인 조정·디자인 가이드·GitHub는 디자이너 모드에서만 보인다. 이 브라우저에 기억된다.
+  // 디자인 조정·디자인 가이드·GitHub는 디자이너 모드에서만 보인다. 새로고침해도 유지되고, 탭을 닫으면 꺼진다(sessionStorage).
   // 화면에서 숨길 뿐 접근 제한(보안)은 아니다.
   var ADMIN_KEY = 'nt-admin', HOLD_MS = 2000, isAdmin = false;
-  try { isAdmin = localStorage.getItem(ADMIN_KEY) === '1'; } catch (e) {}
+  try { localStorage.removeItem(ADMIN_KEY); isAdmin = sessionStorage.getItem(ADMIN_KEY) === '1'; } catch (e) {}   // 예전(0.13.0~) localStorage 값은 지운다
   function currentTokens() { return isAdmin ? NTTuner.effective() : baseTokens; }
   function applyAdmin(on, announce) {
     isAdmin = on;
     document.body.classList.toggle('admin', on);
-    try { if (on) localStorage.setItem(ADMIN_KEY, '1'); else localStorage.removeItem(ADMIN_KEY); } catch (e) {}
+    try { if (on) sessionStorage.setItem(ADMIN_KEY, '1'); else sessionStorage.removeItem(ADMIN_KEY); } catch (e) {}
     if (!on) { var j = document.querySelector('.tab[data-tab="json"]'); if (j) j.click(); }   // 숨길 때는 JSON 탭으로
     if (baseTokens) { tokens = currentTokens(); render(); }
     if (announce) toast(on ? '디자이너 모드를 켰습니다. 디자인 조정·가이드·GitHub가 보입니다.' : '디자이너 모드를 껐습니다.');

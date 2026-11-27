@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.13.5">
-<link rel="stylesheet" href="app.css?v=0.13.5">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.13.6">
+<link rel="stylesheet" href="app.css?v=0.13.6">
 </head>
 <body>
-<script>try { if (localStorage.getItem('nt-admin') === '1') document.body.classList.add('admin'); } catch (e) {}</script>
+<script>try { if (sessionStorage.getItem('nt-admin') === '1') document.body.classList.add('admin'); } catch (e) {}</script>
 <header class="topbar" id="topbar">
   <svg class="hold-ring" aria-hidden="true"><rect class="track" pathLength="100"/><rect class="fill" pathLength="100"/></svg>
   <div class="brand">
@@ -42,7 +42,7 @@
     </li>
     <li class="card">
       <b><i>3</i>이미지 저장</b>
-      <span>숫자·출처를 확인하고 다운로드하세요. JPG·SVG·JSON이 한 번에 저장됩니다.<span class="admin-only"> 디자인을 수정하려면 '디자인 조정' 탭을 선택하세요.</span></span>
+      <span>숫자·출처를 확인하고 다운로드하세요. JPG·SVG·JSON이 한 번에 저장됩니다.</span>
     </li>
   </ol>
 </section>
@@ -138,9 +138,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.13.5"></script>
-<script src="../engine/nt-export-svg.js?v=0.13.5"></script>
-<script src="tuner.js?v=0.13.5"></script>
-<script src="app.js?v=0.13.5"></script>
+<script src="../engine/nt-graphic.js?v=0.13.6"></script>
+<script src="../engine/nt-export-svg.js?v=0.13.6"></script>
+<script src="tuner.js?v=0.13.6"></script>
+<script src="app.js?v=0.13.6"></script>
 </body>
 </html>
