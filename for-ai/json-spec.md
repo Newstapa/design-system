@@ -23,18 +23,25 @@
 | 항목끼리 크기 비교, 순위 | `bar` |
 | 시점별 값 5~12개 | `bar` + `"orientation": "vertical"` |
 | 시간에 따른 추세 | `line` |
-| 처음과 끝 두 시점만 비교 | `slope` |
-| 항목별 전→후 변화 | `dot` |
-| 그룹별 구성 비율 | `bar` + `series` + `"percent": true` |
-| 두 지표 나란히, +/− 값 | `bar` + `series` + `"grouped": true` |
 | 전체 중 한 부분의 비중 | `pie` |
 | 여러 속성을 가진 목록 | `table` |
-| 사건 순서 | `timeline` |
-| 시·도별 값 | `map` |
 | 핵심 숫자 2~4개 | `stat` |
 | 숫자 카드 + 표 조합 | `stack` |
 
-흐름도, 관계도, 세계지도, 사진 비교는 지원하지 않습니다. 그럴 땐 "디자이너 요청이 필요한 유형"이라고 답합니다.
+### 디자이너에게 넘길 유형
+
+아래 그래픽이 필요한 기사라면 **JSON을 만들지 않고** 기자에게 이렇게 답합니다:
+"이 그래픽(○○)은 디자이너 작업이 필요한 유형입니다. 뉴스타파 디자이너에게 문의해 주세요."
+
+- 누적 비율 막대 (그룹별 구성 비율)
+- 묶음·양방향 막대 (두 지표 나란히, +/− 값이 섞인 막대)
+- 기울기 (두 시점 비교)
+- 화살표 점 (항목별 전→후 변화)
+- 지도 (시·도별 값 등 모든 지도)
+- 타임라인 (사건 순서)
+- 흐름도, 관계도, 사진 비교 등 위 표에 없는 유형
+
+기사의 핵심이 이런 유형이더라도, 위 표의 유형(막대·꺾은선·원·표·숫자 카드)으로 충분히 전달되는 숫자가 있다면 그것으로 만들 수 있다고 함께 제안해도 됩니다. 단, **막대에 음수(−) 값을 넣지 않습니다.** 증감·순매수처럼 +/−가 섞이면 양방향 막대이므로 디자이너에게 넘깁니다.
 
 ## 공통 필드
 
@@ -65,34 +72,12 @@
 
 **bar 세로** — 위에 `"orientation":"vertical"` 추가.
 
-**bar 누적 비율**
-```json
-{"type":"bar","title":"…","labels":["전체","진보층","보수층"],"percent":true,"reference":"전체",
- "series":[{"name":"찬성","values":[40,55,20]},{"name":"반대","values":[50,35,70],"highlight":true},{"name":"모름","values":[10,10,10]}],"source":"…"}
-```
-
-**bar 묶음·양방향**
-```json
-{"type":"bar","grouped":true,"title":"…","labels":["부산","대구"],
- "series":[{"name":"자연 증감","values":[-12.1,-6.4]},{"name":"순이동","values":[-9.8,-7.5],"highlight":true}],"valueSuffix":"천 명","source":"…"}
-```
-
 **line**
 ```json
 {"type":"line","title":"…","x":["2019","2020","2021"],"series":[{"name":"청년","values":[43.5,42.2,44.2],"highlight":true},{"name":"전체","values":[60.9,60.1,60.5]}],
  "valueSuffix":"%","showValues":true,"annotations":[{"x":"2020","text":"코로나19"}],"dashedFrom":"2021","source":"…"}
 ```
 - `dashedFrom`: 이 시점부터 점선(전망치). `showValues`: 강조 선의 처음·최고·최저 값 표시.
-
-**slope**
-```json
-{"type":"slope","title":"…","x":["2015년","2025년"],"series":[{"name":"수도권","values":[49.5,50.8],"highlight":true},{"name":"영남권","values":[25.6,24.1]}],"valueSuffix":"%","source":"…"}
-```
-
-**dot**
-```json
-{"type":"dot","title":"…","fromLabel":"2024년","toLabel":"2025년","data":[{"label":"주식","from":3.1,"to":6.9,"highlight":true},{"label":"예금","from":6.8,"to":7.2}],"valueSuffix":"억 원","source":"…"}
-```
 
 **pie** (합이 전체 100%인 데이터만, 5조각 이하)
 ```json
@@ -105,17 +90,6 @@
  "rows":[["2010년","내용 A"],["2025년",{"v":"내용 B","em":true}]],"highlightRows":[1],"source":"…"}
 ```
 - `highlightRows`는 0부터 셉니다. 셀만 강조하려면 `{"v":"값","em":true}`.
-
-**timeline**
-```json
-{"type":"timeline","title":"…","events":[{"date":"12월 3일","text":"사건 A","highlight":true},{"date":"12월 4일","text":"사건 B","desc":"보충 설명"}],"source":"…"}
-```
-
-**map** (한국 시·도)
-```json
-{"type":"map","title":"…","values":{"서울":12,"경기":9,"충남":15},"highlight":["충남"],"valueSuffix":"곳","legendTitle":"지자체 수","source":"…"}
-```
-- 지역명: 서울 부산 대구 인천 광주 대전 울산 세종 경기 강원 충북 충남 전북 전남 경북 경남 제주
 
 **stat**
 ```json

@@ -6,10 +6,8 @@
   'use strict';
   var BASE = '../';
   var EXAMPLES = [
-    ['bar-horizontal', '가로 막대'], ['bar-vertical', '세로 막대'], ['bar-stacked', '누적 비율 막대'],
-    ['bar-diverging', '양방향 막대'], ['line', '꺾은선'], ['line-multi', '꺾은선 여러 개'],
-    ['slope', '기울기'], ['dot', '화살표 점'], ['pie', '원그래프'], ['table', '표'],
-    ['timeline', '타임라인'], ['map', '지도'], ['stat-table', '숫자 카드 + 표']
+    ['bar-horizontal', '가로 막대'], ['bar-vertical', '세로 막대'], ['line', '꺾은선'],
+    ['line-multi', '꺾은선 여러 개'], ['pie', '원그래프'], ['table', '표'], ['stat-table', '숫자 카드 + 표']
   ];
   var SPEC_URL = 'https://raw.githubusercontent.com/Newstapa/design-system/main/for-ai/json-spec.md';
   var SHORT_PROMPT = '아래 주소의 뉴스타파 그래픽 지침을 읽고, 그 형식에 맞는 JSON을 만들어 주세요.\n' + SPEC_URL + '\n\n[기사 또는 데이터]\n';
@@ -66,9 +64,12 @@
     fig.style.height = (frame.offsetHeight * s) + 'px';
   }
 
+  var EMPTY_HTML = null;
+  function resetEmpty() { if (EMPTY_HTML == null) EMPTY_HTML = emptyEl.innerHTML; emptyEl.innerHTML = EMPTY_HTML; emptyEl.classList.remove('designer-note'); }
   async function render() {
     var text = specEl.value.trim();
-    if (!text) { mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; svgBtn.disabled = true; msgEl.innerHTML = ''; fit(); return; }
+    if (EMPTY_HTML == null) EMPTY_HTML = emptyEl.innerHTML;
+    if (!text) { resetEmpty(); mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; svgBtn.disabled = true; msgEl.innerHTML = ''; fit(); return; }
     var spec;
     try { spec = extractJSON(text); } catch (e) { showMessages(e.message); saveBtn.disabled = true; svgBtn.disabled = true; return; }
     try {
@@ -77,6 +78,7 @@
       mount.innerHTML = '';
       var warns = NT.render(spec, tokens, mount);
       emptyEl.hidden = true; saveBtn.disabled = false; svgBtn.disabled = false;
+      resetEmpty();
       lastTitle = (spec.title || 'graphic').replace(/\n/g, ' ');
       var newAcc = (tokens.accents && tokens.accents[spec.accent]) ? spec.accent : tokens.defaultAccent;
       if (accentEl.value !== newAcc) { accentEl.value = newAcc; if (window.NTTuner) NTTuner.rebuild(); }
@@ -84,7 +86,9 @@
       if (window.NTTuner) NTTuner.refreshSpec(spec);
     } catch (e) {
       mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; svgBtn.disabled = true;
-      showMessages('그리기 오류: ' + (e && e.message || e));
+      if (e && e.designer) { emptyEl.textContent = e.message; emptyEl.classList.add('designer-note'); }
+      if (e && e.designer) msgEl.innerHTML = '<div class="designer"><b>디자이너 문의가 필요한 유형</b>' + esc(e.message) + '</div>';
+      else showMessages('그리기 오류: ' + (e && e.message || e));
     }
     fit();
   }

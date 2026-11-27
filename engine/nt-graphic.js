@@ -645,9 +645,27 @@
 
   var RENDER = { dot: renderDot, slope: renderSlope, bar: renderBar, line: renderLine, pie: renderPie, table: renderTable, timeline: renderTimeline, map: renderMap, stat: renderStat, stack: renderStack };
 
+  // ---------- 디자이너에게 넘기는 유형 ----------
+  // 아래 유형은 AI·엔진으로 만들지 않고 디자이너에게 요청한다 (guide.md 6장).
+  var DESIGNER_ONLY = { slope: '기울기', dot: '화살표 점', timeline: '타임라인', map: '지도' };
+  function designerOnly(sp) {
+    if (!sp || typeof sp !== 'object') return null;
+    if (DESIGNER_ONLY[sp.type]) return DESIGNER_ONLY[sp.type];
+    if (sp.type === 'bar') {
+      if (sp.grouped) return '묶음·양방향 막대';
+      if (sp.series) return '누적 비율 막대';
+      if ((sp.data || []).some(function (d) { return Number(d && d.value) < 0; })) return '양방향 막대';
+    }
+    if (sp.type === 'stack') for (var i = 0; i < (sp.blocks || []).length; i++) { var r = designerOnly(sp.blocks[i]); if (r) return r; }
+    return null;
+  }
+  function designerMessage(name) { return '이 그래픽(' + name + ')은 디자이너 작업이 필요한 유형입니다. 뉴스타파 디자이너에게 문의해 주세요.'; }
+
   // ---------- 진입점 ----------
   function render(spec, tokens, mount) {
     T = JSON.parse(JSON.stringify(tokens)); C = T.color; F = T.font; warnings = [];
+    var dOnly = designerOnly(spec);
+    if (dOnly) { var de = new Error(designerMessage(dOnly)); de.designer = dOnly; throw de; }
     // 강조색 세트 적용 (tokens.accents 에 등록된 것만)
     var accKey = spec.accent || T.defaultAccent || 'orange', acc = (T.accents || {})[accKey];
     if (!acc) { warn('등록되지 않은 강조색 "' + spec.accent + '" — 기본색으로 그렸습니다. 쓸 수 있는 값: ' + Object.keys(T.accents || {}).join(', ')); acc = (T.accents || {})[T.defaultAccent]; }
@@ -675,7 +693,7 @@
     if (!spec.title) warn('제목(title)이 없습니다.');
     else if (spec.title.replace(/\n/g, '').length > T.limits.titleMaxChars) warn('제목이 ' + spec.title.length + '자입니다. ' + T.limits.titleMaxChars + '자 이내로 줄이거나 부제로 나누세요.');
     if (!spec.source) warn('출처(source)가 없습니다. 반드시 넣으세요.');
-    if (!RENDER[spec.type]) throw new Error('지원하지 않는 type: ' + spec.type + ' (bar, line, slope, dot, pie, table, timeline, map, stat, stack)');
+    if (!RENDER[spec.type]) throw new Error('지원하지 않는 type: ' + spec.type + ' (bar, line, pie, table, stat, stack). 그 밖의 유형은 디자이너에게 문의해 주세요.');
 
     var RL = T.rules || { top: { visible: true, width: 2 }, bottom: { visible: true, width: 1 } };
     var ruleH = function (r) { return r ? Math.max(0, Number(r.width) || 0) : 0; };

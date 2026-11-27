@@ -37,7 +37,7 @@ window.__NT_TOKENS={json.dumps(tokens, ensure_ascii=False)};
 window.__NT_SPEC={json.dumps(spec, ensure_ascii=False)};
 document.fonts.load('700 20px "Pretendard Variable"').then(function(){{return document.fonts.ready}}).then(function(){{
   try {{ window.__NT_WARN = NT.render(window.__NT_SPEC, window.__NT_TOKENS, document.getElementById('mount')); }}
-  catch(e) {{ window.__NT_ERR = String(e && e.stack || e); }}
+  catch(e) {{ window.__NT_ERR = (e && e.designer) ? ('DESIGNER:' + e.message) : String(e && e.stack || e); }}
   window.__NT_DONE = true;
 }});
 </script></body></html>"""
@@ -74,7 +74,10 @@ def main():
         pg.wait_for_function("window.__NT_DONE === true", timeout=20000)
         err = pg.evaluate("window.__NT_ERR || null")
         if err:
-            b.close(); sys.exit("렌더 오류: " + err)
+            b.close()
+            if err.startswith("DESIGNER:"):
+                sys.exit("디자이너 문의 필요 — " + err[len("DESIGNER:"):] + "\n(AI는 이 그래픽을 만들지 말고 기자에게 위 문장을 그대로 안내합니다.)")
+            sys.exit("렌더 오류: " + err)
         warns = pg.evaluate("window.__NT_WARN || []")
         out = pathlib.Path(a.out)
         el = pg.locator("#nt-frame")

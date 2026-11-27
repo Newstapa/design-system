@@ -142,6 +142,9 @@ body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -appl
 .messages .err { color: var(--err); font-weight: 600; white-space: pre-wrap; }
 .messages ul { padding-left: 18px; color: var(--warn); }
 .messages ul li + li { margin-top: 4px; }
+.messages .designer { color: var(--text); line-height: 1.6; }
+.messages .designer b { display: block; color: var(--warn); margin-bottom: 2px; }
+.empty.designer-note { color: var(--text); font-weight: 600; line-height: 1.6; padding: 0 24px; text-align: center; }
 .messages .warn-title { color: var(--warn); font-weight: 700; margin-bottom: 4px; }
 
 /* 미리보기 머리 */
