@@ -34,7 +34,18 @@ body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -appl
   display: flex; align-items: center; justify-content: space-between; gap: 16px; width: calc(100% - 56px);
 }
 .brand { display: flex; align-items: center; gap: 16px; min-width: 0; }
-.brand-logo { height: 34px; width: auto; opacity: 0.85; flex: none; }
+.brand-logo { height: 34px; width: auto; opacity: 0.85; flex: none; display: block; }
+/* 디자이너 모드: 로고를 2초 길게 누르면 켜고 끈다 */
+body:not(.admin) .admin-only { display: none !important; }
+.brand-mark { position: relative; flex: none; display: block; cursor: default; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: none; }
+.brand-mark .brand-logo { pointer-events: none; transition: transform .25s; }
+.brand-mark.holding .brand-logo { transform: scale(0.94); transition: transform 2s linear; }
+.brand-mark.pop .brand-logo { animation: brandPop .45s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes brandPop { 0% { transform: scale(0.94); } 55% { transform: scale(1.12) rotate(-3deg); } 100% { transform: scale(1); } }
+.hold-ring { position: absolute; inset: -8px -10px; border-radius: 14px; padding: 2.5px; pointer-events: none; opacity: 0; transition: opacity .15s;
+  background: conic-gradient(from 0deg, var(--accent) calc(var(--p, 0) * 1turn), rgba(0, 0, 0, 0.06) 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+.brand-mark.holding .hold-ring, .brand-mark.releasing .hold-ring { opacity: 1; }
 .brand-text { min-width: 0; }
 .brand-text h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
 .brand-text p { font-size: 14px; color: var(--sub); margin-top: 2px; }

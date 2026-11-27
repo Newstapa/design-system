@@ -157,6 +157,57 @@
     specEl.value = txt; render();
   }
 
+  // ---------- 디자이너 모드 (로고 2초 길게 누르기) ----------
+  // 디자인 조정·디자인 가이드·GitHub는 디자이너 모드에서만 보인다. 이 브라우저에 기억된다.
+  // 화면에서 숨길 뿐 접근 제한(보안)은 아니다.
+  var ADMIN_KEY = 'nt-admin', HOLD_MS = 2000, isAdmin = false;
+  try { isAdmin = localStorage.getItem(ADMIN_KEY) === '1'; } catch (e) {}
+  function currentTokens() { return isAdmin ? NTTuner.effective() : baseTokens; }
+  function applyAdmin(on, announce) {
+    isAdmin = on;
+    document.body.classList.toggle('admin', on);
+    try { if (on) localStorage.setItem(ADMIN_KEY, '1'); else localStorage.removeItem(ADMIN_KEY); } catch (e) {}
+    if (!on) { var j = document.querySelector('.tab[data-tab="json"]'); if (j) j.click(); }   // 숨길 때는 JSON 탭으로
+    if (baseTokens) { tokens = currentTokens(); render(); }
+    if (announce) toast(on ? '디자이너 모드를 켰습니다. 디자인 조정·가이드·GitHub가 보입니다.' : '디자이너 모드를 껐습니다.');
+  }
+  function setupAdmin() {
+    applyAdmin(isAdmin, false);
+    var mark = $('brandMark'), raf = 0, start = 0, p = 0, holding = false;
+    function setP(v) { p = v; mark.style.setProperty('--p', v.toFixed(4)); }
+    function tick(now) {
+      if (!holding) return;
+      setP(Math.min(1, (now - start) / HOLD_MS));
+      if (p >= 1) { finish(); return; }
+      raf = requestAnimationFrame(tick);
+    }
+    function begin(e) {
+      if (e.button != null && e.button !== 0) return;
+      e.preventDefault();
+      holding = true; start = performance.now(); mark.classList.remove('releasing', 'pop'); mark.classList.add('holding');
+      cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
+    }
+    function finish() {
+      holding = false; mark.classList.remove('holding');
+      void mark.offsetWidth; mark.classList.add('pop');
+      setTimeout(function () { setP(0); mark.classList.remove('pop'); }, 450);
+      if (navigator.vibrate) try { navigator.vibrate(30); } catch (e) {}
+      applyAdmin(!isAdmin, true);
+    }
+    function cancel() {
+      if (!holding) return;
+      holding = false; cancelAnimationFrame(raf); mark.classList.remove('holding'); mark.classList.add('releasing');
+      var from = p, t0 = performance.now();
+      (function back(now) {   // 게이지가 되감기며 사라진다
+        var k = Math.min(1, (now - t0) / 250); setP(from * (1 - k));
+        if (k < 1 && !holding) requestAnimationFrame(back); else if (!holding) mark.classList.remove('releasing');
+      })(t0);
+    }
+    mark.addEventListener('pointerdown', begin);
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (t) { mark.addEventListener(t, cancel); });
+    mark.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  }
+
   async function init() {
     var sel = $('example');
     EXAMPLES.forEach(function (e) { var o = document.createElement('option'); o.value = e[0]; o.textContent = e[1]; sel.appendChild(o); });
@@ -190,7 +241,7 @@
     NTTuner.init({
       root: $('tab-tune'), base: baseTokens,
       getAccent: function () { return accentEl.value || baseTokens.defaultAccent; },
-      onChange: function () { tokens = NTTuner.effective(); render(); },
+      onChange: function () { tokens = currentTokens(); render(); },
       spec: {
         get: function () { try { return extractJSON(specEl.value); } catch (e) { toast('JSON 형식 오류를 먼저 고쳐 주세요.'); return null; } },
         set: function (s) { specEl.value = JSON.stringify(s, null, 2); render(); }
@@ -201,8 +252,9 @@
       },
       download: download
     });
-    tokens = NTTuner.effective();
+    tokens = currentTokens();
     NTTuner.refreshSpec(null);
+    setupAdmin();
     document.querySelectorAll('.tab[data-tab]').forEach(function (b) {
       b.addEventListener('click', function () {
         document.querySelectorAll('.tab[data-tab]').forEach(function (x) { var on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-selected', on); });

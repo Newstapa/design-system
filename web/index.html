@@ -4,21 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.12.2">
-<link rel="stylesheet" href="app.css?v=0.12.2">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.13.0">
+<link rel="stylesheet" href="app.css?v=0.13.0">
 </head>
 <body>
+<script>try { if (localStorage.getItem('nt-admin') === '1') document.body.classList.add('admin'); } catch (e) {}</script>
 <header class="topbar">
   <div class="brand">
-    <img class="brand-logo" src="../assets/newstapa-logo.svg" alt="뉴스타파">
+    <span class="brand-mark" id="brandMark"><img class="brand-logo" src="../assets/newstapa-logo.svg" alt="뉴스타파" draggable="false"><span class="hold-ring" aria-hidden="true"></span></span>
     <div class="brand-text">
       <h1>그래픽 렌더러</h1>
       <p>뉴스타파 디자인 가이드대로 시각화를 합니다.</p>
     </div>
   </div>
   <nav class="topnav">
-    <a class="pill-link" href="https://github.com/Newstapa/design-system/blob/main/guide.md" target="_blank" rel="noopener">디자인 가이드</a>
-    <a class="pill-link" href="https://github.com/Newstapa/design-system" target="_blank" rel="noopener">GitHub</a>
+    <a class="pill-link admin-only" href="https://github.com/Newstapa/design-system/blob/main/guide.md" target="_blank" rel="noopener">디자인 가이드</a>
+    <a class="pill-link admin-only" href="https://github.com/Newstapa/design-system" target="_blank" rel="noopener">GitHub</a>
     <button id="skillInfo" class="pill-link primary" type="button" aria-haspopup="dialog" title="스킬 적용 방법 보기 · 다운로드">스킬 다운로드</button>
   </nav>
 </header>
@@ -40,7 +41,7 @@
     </li>
     <li class="card">
       <b><i>3</i>이미지 저장</b>
-      <span>숫자·출처를 확인하고 다운로드하세요. JPG·SVG·JSON이 한 번에 저장됩니다. 디자인을 수정하려면 '디자인 조정' 탭을 선택하세요.</span>
+      <span>숫자·출처를 확인하고 다운로드하세요. JPG·SVG·JSON이 한 번에 저장됩니다.<span class="admin-only"> 디자인을 수정하려면 '디자인 조정' 탭을 선택하세요.</span></span>
     </li>
   </ol>
 </section>
@@ -48,7 +49,7 @@
 <main class="workspace">
   <section class="card pane editor">
     <div class="pane-head">
-      <div class="tabs" role="tablist">
+      <div class="tabs admin-only" role="tablist">
         <button class="tab active" type="button" role="tab" data-tab="json" aria-selected="true">JSON</button>
         <button class="tab" type="button" role="tab" data-tab="tune" aria-selected="false">디자인 조정</button>
       </div>
@@ -66,7 +67,7 @@
     <div id="tab-json" class="tab-panel">
       <textarea id="spec" spellcheck="false" placeholder='AI가 준 JSON을 여기에 붙여넣으세요. 예: {"type":"bar", "title":"…", …}'></textarea>
     </div>
-    <div id="tab-tune" class="tab-panel tune" hidden></div>
+    <div id="tab-tune" class="tab-panel tune admin-only" hidden></div>
     <div id="messages" class="messages" aria-live="polite"></div>
   </section>
 
@@ -136,9 +137,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.12.2"></script>
-<script src="../engine/nt-export-svg.js?v=0.12.2"></script>
-<script src="tuner.js?v=0.12.2"></script>
-<script src="app.js?v=0.12.2"></script>
+<script src="../engine/nt-graphic.js?v=0.13.0"></script>
+<script src="../engine/nt-export-svg.js?v=0.13.0"></script>
+<script src="tuner.js?v=0.13.0"></script>
+<script src="app.js?v=0.13.0"></script>
 </body>
 </html>
