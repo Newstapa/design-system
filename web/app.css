@@ -219,10 +219,13 @@ button.pill-link { font-family: inherit; line-height: inherit; border: 0; cursor
 .article-text:hover { box-shadow: 0 0 0 1px var(--line); }
 .article-text:focus { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35); }
 .kicker-hint { font-weight: 500; }
+.kicker-hint .g { display: none; }
+.can-edit-graphic .kicker-hint .g { display: inline; }
+.can-edit-graphic .kicker-hint .ng { display: none; }
 /* 그래픽 문구(제목·부제·주석·출처) 바로 고치기 */
-#mount [data-field] { cursor: text; border-radius: 3px; outline: none; }
-#mount [data-field]:hover { box-shadow: 0 0 0 calc(2px * var(--u, 1)) rgba(59, 130, 246, 0.35); }
-#mount [data-field]:focus { box-shadow: 0 0 0 calc(3px * var(--u, 1)) rgba(59, 130, 246, 0.6); background: rgba(59, 130, 246, 0.06); }
+#mount [contenteditable] { cursor: text; border-radius: 3px; outline: none; }
+#mount [contenteditable]:hover { box-shadow: 0 0 0 calc(2px * var(--u, 1)) rgba(59, 130, 246, 0.35); }
+#mount [contenteditable]:focus { box-shadow: 0 0 0 calc(3px * var(--u, 1)) rgba(59, 130, 246, 0.6); background: rgba(59, 130, 246, 0.06); }
 /* 모바일 기사 화면: 폭 375px(아이폰 기준), 좌우 여백 15px */
 .article-mock.is-mobile { max-width: 375px; font-size: 16px; line-height: 1.8; border: 1px solid var(--line); border-radius: 28px; padding-top: 28px; padding-bottom: 12px; box-shadow: var(--shadow); }
 .article-mock > .kicker { font-size: 13px; font-weight: 600; color: var(--faint); margin-bottom: 16px; }

@@ -26,6 +26,9 @@
     if (text != null) e.textContent = text;
     return e;
   }
+  // 미리보기에서 글자를 고칠 때 JSON 어느 값인지 알려 주는 표시 (stack 블록 안이면 앞에 blocks.i.)
+  var PFX = '';
+  function dp(p) { return ' data-path="' + PFX + p + '"'; }
   function esc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   var _ctx;
   function measure(text, size, weight) {
@@ -491,7 +494,8 @@
     if (spec.fontSize) tbl.style.fontSize = spec.fontSize + 'px';
     var thead = h('thead'), tr = h('tr');
     cols.forEach(function (c) {
-      var th = h('th', { class: 'al-' + (c.align || 'center') }, esc(c.label));
+      var ci0 = cols.indexOf(c), hp = typeof spec.columns[ci0] === 'string' ? 'columns.' + ci0 : 'columns.' + ci0 + '.label';
+      var th = h('th', { class: 'al-' + (c.align || 'center') }, '<span' + dp(hp) + '>' + esc(c.label) + '</span>');
       if (c.width) th.style.width = c.width; tr.appendChild(th);
     });
     thead.appendChild(tr); tbl.appendChild(thead);
@@ -504,7 +508,8 @@
         var c = cols[ci] || {}, v = cell, sub = null, em = false;
         if (cell && typeof cell === 'object') { v = cell.v; sub = cell.sub; em = !!cell.em; }
         var str = typeof v === 'number' ? fmt(v, c.decimals || 0, c.suffix || '') : esc(v == null ? '' : v).replace(/\n/g, '<br>');
-        var td = h('td', { class: 'al-' + (c.align || (typeof v === 'number' ? 'right' : 'center')) + (em ? ' em' : '') }, str + (sub ? '<span class="sub">' + esc(sub) + '</span>' : ''));
+        var cp = 'rows.' + ri + '.' + (Array.isArray(row) ? ci : c.key) + (cell && typeof cell === 'object' ? '.v' : '');
+        var td = h('td', { class: 'al-' + (c.align || (typeof v === 'number' ? 'right' : 'center')) + (em ? ' em' : '') }, '<span' + dp(cp) + '>' + str + '</span>' + (sub ? '<span class="sub">' + esc(sub) + '</span>' : ''));
         r.appendChild(td);
       });
       tb.appendChild(r);
@@ -623,13 +628,14 @@
     var box = h('div', { class: 'nt-stats', style: 'grid-template-columns:repeat(' + k.length + ',1fr)' });
     if (k.length > 4) warn('숫자 카드가 ' + k.length + '개입니다. 4개 이하를 권장합니다.');
     var colW = (W - u(16)) / k.length - u(28);
-    k.forEach(function (it) {
+    var kKey = spec.items ? 'items' : 'kpis';
+    k.forEach(function (it, ki) {
       var vtxt = String(typeof it.value === 'number' ? fmt(it.value, it.decimals || 0) : it.value);
       var vw = measure(vtxt, F.kpiValue.size, 800) + (it.unit ? measure(it.unit, F.kpiValue.size * 0.55, 700) + 4 : 0);
       var vsize = vw > colW ? Math.max(F.kpiValue.size * 0.55, Math.floor(F.kpiValue.size * colW / vw)) : F.kpiValue.size;
-      var unit = it.unit ? '<small>' + esc(it.unit) + '</small>' : '';
+      var unit = it.unit ? '<small' + dp(kKey + '.' + ki + '.unit') + '>' + esc(it.unit) + '</small>' : '';
       box.appendChild(h('div', { class: 'nt-stat' + (it.highlight ? ' hl' : '') },
-        '<div class="l">' + esc(it.label) + '</div><div class="v" style="font-size:' + vsize + 'px">' + esc(typeof it.value === 'number' ? fmt(it.value, it.decimals || 0) : it.value) + unit + '</div>' + (it.sub ? '<div class="s">' + esc(it.sub) + '</div>' : '')));
+        '<div class="l"><span' + dp(kKey + '.' + ki + '.label') + '>' + esc(it.label) + '</span></div><div class="v" style="font-size:' + vsize + 'px"><span' + dp(kKey + '.' + ki + '.value') + '>' + esc(typeof it.value === 'number' ? fmt(it.value, it.decimals || 0) : it.value) + '</span>' + unit + '</div>' + (it.sub ? '<div class="s"><span' + dp(kKey + '.' + ki + '.sub') + '>' + esc(it.sub) + '</span></div>' : '')));
     });
     body.appendChild(box);
   }
@@ -641,21 +647,22 @@
     var items = spec.items || [], numbered = spec.numbered !== false;
     if (items.length > 6) warn('항목이 ' + items.length + '개입니다. 6개 이하를 권장합니다.');
     var box = h('div', { class: 'nt-textbox' });
-    if (spec.lead) box.appendChild(h('div', { class: 'nt-text-lead' }, mark(spec.lead)));
+    if (spec.lead) box.appendChild(h('div', { class: 'nt-text-lead', 'data-path': PFX + 'lead' }, mark(spec.lead)));
     if (items.length) {
       var list = h('ol', { class: 'nt-text-items' + (numbered ? '' : ' bullets') });
       items.forEach(function (it, i) {
+        var ip = 'items.' + i + (typeof it === 'string' ? '' : '.text');
         if (typeof it === 'string') it = { text: it };
         var li = h('li', { class: it.highlight ? 'hl' : '' });
         li.appendChild(h('span', { class: 'n' }, numbered ? String(i + 1) : ''));
         var c = h('div', { class: 'c' });
-        if (it.heading) c.appendChild(h('div', { class: 'hd' }, mark(it.heading)));
-        if (it.text) c.appendChild(h('div', { class: 'tx' }, mark(it.text)));
+        if (it.heading) c.appendChild(h('div', { class: 'hd', 'data-path': PFX + 'items.' + i + '.heading' }, mark(it.heading)));
+        if (it.text) c.appendChild(h('div', { class: 'tx', 'data-path': PFX + ip }, mark(it.text)));
         li.appendChild(c); list.appendChild(li);
       });
       box.appendChild(list);
     }
-    if (spec.closing) box.appendChild(h('div', { class: 'nt-text-closing' }, mark(spec.closing)));
+    if (spec.closing) box.appendChild(h('div', { class: 'nt-text-closing', 'data-path': PFX + 'closing' }, mark(spec.closing)));
     if (!spec.lead && !items.length && !spec.closing) warn('lead, items, closing 중 하나는 넣으세요.');
     body.appendChild(box);
   }
@@ -664,8 +671,8 @@
   function renderStack(spec, body) {
     spec.blocks.forEach(function (b, i) {
       var wrapEl = h('div', { style: i ? 'margin-top:' + u(36) + 'px' : '' });
-      if (b.heading) wrapEl.appendChild(h('div', { style: 'font-size:' + F.label.size * 1.15 + 'px;font-weight:700;margin-bottom:' + u(16) + 'px;color:' + C.ink }, esc(b.heading)));
-      RENDER[b.type](b, wrapEl); body.appendChild(wrapEl);
+      if (b.heading) wrapEl.appendChild(h('div', { 'data-path': 'blocks.' + i + '.heading', style: 'font-size:' + F.label.size * 1.15 + 'px;font-weight:700;margin-bottom:' + u(16) + 'px;color:' + C.ink }, esc(b.heading)));
+      PFX = 'blocks.' + i + '.'; RENDER[b.type](b, wrapEl); PFX = ''; body.appendChild(wrapEl);
     });
   }
 
@@ -689,7 +696,7 @@
 
   // ---------- 진입점 ----------
   function render(spec, tokens, mount) {
-    T = JSON.parse(JSON.stringify(tokens)); C = T.color; F = T.font; warnings = []; if (!C.surface) C.surface = '#FFFFFF';
+    T = JSON.parse(JSON.stringify(tokens)); C = T.color; F = T.font; warnings = []; PFX = ''; if (!C.surface) C.surface = '#FFFFFF';
     var dOnly = designerOnly(spec);
     if (dOnly) { var de = new Error(designerMessage(dOnly)); de.designer = dOnly; throw de; }
     // 강조색 세트 적용 (tokens.accents 에 등록된 것만)
@@ -732,8 +739,8 @@
     frame.appendChild(h('div', { class: 'nt-rule-top', style: ruleS(RL.top) }));
     var header = h('div', { class: 'nt-header' });
     var br = function (t) { return esc(t).replace(/\n/g, '<br>'); };   // 문구 안 줄바꿈(\n)
-    header.appendChild(h('div', { class: 'nt-title', 'data-field': 'title' }, br(spec.title || '')));
-    if (spec.subtitle) header.appendChild(h('div', { class: 'nt-subtitle', 'data-field': 'subtitle' }, br(spec.subtitle)));
+    header.appendChild(h('div', { class: 'nt-title', 'data-path': 'title' }, br(spec.title || '')));
+    if (spec.subtitle) header.appendChild(h('div', { class: 'nt-subtitle', 'data-path': 'subtitle' }, br(spec.subtitle)));
     frame.appendChild(header);
     var body = h('div', { class: 'nt-body' });
     if (spec.unit) body.appendChild(h('div', { class: 'nt-unit' }, '단위: ' + esc(spec.unit)));
@@ -741,9 +748,9 @@
     mount.appendChild(frame);
     RENDER[spec.type](spec, body);
     var foot = h('div', { class: 'nt-footer' }), notes = [].concat(spec.notes || spec.note || []);
-    notes.forEach(function (n, i) { foot.appendChild(h('p', null, '* <span data-field="notes" data-i="' + i + '">' + br(n) + '</span>')); });
+    notes.forEach(function (n, i) { foot.appendChild(h('p', null, '* <span data-path="notes.' + i + '">' + br(n) + '</span>')); });
     var src = Array.isArray(spec.source) ? spec.source.filter(Boolean).join(', ') : spec.source;
-    if (src) foot.appendChild(h('p', null, '* 출처 : <span data-field="source">' + br(src) + '</span>'));
+    if (src) foot.appendChild(h('p', null, '* 출처 : <span data-path="source">' + br(src) + '</span>'));
     if (foot.childNodes.length) frame.appendChild(foot);
     frame.appendChild(h('div', { class: 'nt-rule-bottom', style: ruleS(RL.bottom) }));
     // 넘침 검사

@@ -67,26 +67,54 @@
   var EMPTY_HTML = null;
   function resetEmpty() { if (EMPTY_HTML == null) EMPTY_HTML = emptyEl.innerHTML; emptyEl.innerHTML = EMPTY_HTML; emptyEl.classList.remove('designer-note'); }
   // ---------- 미리보기에서 글자 고치기 ----------
-  // 그래픽의 제목·부제·주석·출처(data-field)를 눌러 고치면 JSON에 바로 반영된다. 엔터는 줄바꿈.
+  // 그림(막대·꺾은선·원)이 없는 유형(텍스트 강조·표·숫자 카드, 이들로만 된 stack)에서만 켠다.
+  // 고칠 수 있는 글자에는 엔진이 data-path(JSON 경로)를 달아 둔다. 엔터는 줄바꿈, **강조**는 유지.
+  var EDITABLE_TYPES = ['text', 'table', 'stat'];
+  function isEditable(spec) {
+    if (!spec) return false;
+    if (spec.type === 'stack') return (spec.blocks || []).length > 0 && spec.blocks.every(function (b) { return EDITABLE_TYPES.indexOf(b.type) >= 0; });
+    return EDITABLE_TYPES.indexOf(spec.type) >= 0;
+  }
   function plainEditable(el) {
-    try { el.contentEditable = 'plaintext-only'; } catch (e) { el.contentEditable = 'true'; }
+    try { el.contentEditable = 'plaintext-only'; } catch (e) {}
     if (el.contentEditable !== 'plaintext-only') el.contentEditable = 'true';
   }
   function insertBreak() { if (!document.execCommand('insertLineBreak')) document.execCommand('insertHTML', false, '<br>'); }
-  function readText(el) { return el.innerText.replace(/\u00a0/g, ' ').replace(/\n+$/, ''); }
+  function readRich(el) {   // 글자 + 줄바꿈 + **강조** 표시를 되살린다
+    var out = '';
+    (function walk(n) {
+      n.childNodes.forEach(function (c) {
+        if (c.nodeType === 3) out += c.nodeValue;
+        else if (c.nodeName === 'BR') out += '\n';
+        else if (c.nodeName === 'B' && c.classList.contains('mk')) { out += '**'; walk(c); out += '**'; }
+        else if (c.nodeName === 'DIV' || c.nodeName === 'P') { if (out && !/\n$/.test(out)) out += '\n'; walk(c); }
+        else walk(c);
+      });
+    })(el);
+    return out.replace(/\u00a0/g, ' ').replace(/\*\*\*\*/g, '').replace(/\n+$/, '');
+  }
+  function setPathValue(spec, path, v) {
+    var ks = path.split('.'), o = spec;
+    if (ks[0] === 'notes' && !spec.notes && spec.note != null) { spec.notes = [].concat(spec.note); delete spec.note; }
+    if (path === 'source') { spec.source = v; return; }
+    for (var i = 0; i < ks.length - 1; i++) {
+      var k = /^\d+$/.test(ks[i]) ? Number(ks[i]) : ks[i];
+      if (o[k] == null || typeof o[k] !== 'object') return;   // 없는 경로는 건드리지 않는다
+      o = o[k];
+    }
+    var last = /^\d+$/.test(ks[ks.length - 1]) ? Number(ks[ks.length - 1]) : ks[ks.length - 1];
+    o[last] = v;
+  }
   function syncField(el) {
     var spec; try { spec = extractJSON(specEl.value); } catch (e) { return; }
-    var f = el.getAttribute('data-field'), v = readText(el);
-    if (f === 'title' || f === 'subtitle') spec[f] = v;
-    else if (f === 'source') spec.source = v;
-    else if (f === 'notes') {
-      var arr = [].concat(spec.notes || spec.note || []); delete spec.note;
-      arr[Number(el.getAttribute('data-i')) || 0] = v; spec.notes = arr;
-    }
+    setPathValue(spec, el.getAttribute('data-path'), readRich(el));
     specEl.value = JSON.stringify(spec, null, 2);
   }
-  function enableEdit() {
-    mount.querySelectorAll('[data-field]').forEach(function (el) {
+  function enableEdit(spec) {
+    var on = isEditable(spec);
+    document.querySelector('.article-mock').classList.toggle('can-edit-graphic', on);
+    if (!on) return;
+    mount.querySelectorAll('[data-path]').forEach(function (el) {
       plainEditable(el); el.spellcheck = false;
       el.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); insertBreak(); syncField(el); }
@@ -96,9 +124,9 @@
       el.addEventListener('input', function () { syncField(el); });
       el.addEventListener('blur', function () {
         syncField(el);
-        setTimeout(function () {   // 다른 문구로 옮겨 가는 중이면 그 문구를 마친 뒤 다시 그린다
+        setTimeout(function () {   // 다른 글자로 옮겨 가는 중이면 그 글자를 마친 뒤 다시 그린다
           var a = document.activeElement;
-          if (a && mount.contains(a) && a.hasAttribute('data-field')) return;
+          if (a && mount.contains(a) && a.hasAttribute('data-path')) return;
           render();
         }, 0);
       });
@@ -134,7 +162,7 @@
       var newAcc = (tokens.accents && tokens.accents[spec.accent]) ? spec.accent : tokens.defaultAccent;
       if (accentEl.value !== newAcc) { accentEl.value = newAcc; if (window.NTTuner) NTTuner.rebuild(); }
       showMessages(null, warns);
-      enableEdit();
+      enableEdit(spec);
       if (window.NTTuner) NTTuner.refreshSpec(spec);
     } catch (e) {
       mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true;
