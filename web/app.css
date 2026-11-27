@@ -121,7 +121,9 @@ button.pill-link { font-family: inherit; line-height: inherit; border: 0; cursor
 .btn.ghost:hover { background: var(--soft); color: var(--text); }
 .btn.outline { background: transparent; border-color: #D5D7DC; color: var(--text); }   /* 고스트 버튼: 투명 바탕 + 테두리 */
 .btn.outline:hover { background: var(--soft); }
-.upload-btn { height: 38px; padding: 0 16px; font-size: 14px; cursor: pointer; }
+.upload-btn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 999px; background: var(--soft); color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.upload-btn:hover { background: #E7E9ED; }
+.upload-btn svg { flex: none; color: var(--sub); }
 .graphic.dragover .empty, .graphic.dragover #mount { outline: 3px dashed var(--accent); outline-offset: 6px; }
 .btn:focus-visible, .select select:focus-visible, .tab:focus-visible, .pill-link:focus-visible { outline: 2px solid #3B82F6; outline-offset: 2px; }
 
@@ -142,7 +144,7 @@ button.pill-link { font-family: inherit; line-height: inherit; border: 0; cursor
 
 /* 탭 (알약 세그먼트) */
 .tabs { display: inline-flex; padding: 4px; gap: 4px; background: var(--soft); border-radius: 999px; }
-.tabs-row { flex: 1 1 100%; }   /* 탭 줄은 항상 한 줄 전체, 탭 버튼은 왼쪽에 원래 크기로. 강조색·예시는 그 아래 */
+.tabs-row { flex: 1 1 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; }   /* 탭 줄은 항상 한 줄 전체, 탭 버튼은 왼쪽에 원래 크기로. 강조색·예시는 그 아래 */
 .tab { font: inherit; font-size: 14px; font-weight: 600; color: var(--sub); height: 34px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; cursor: pointer; }
 .tab:hover { color: var(--text); }
 .tab.active { background: var(--primary); color: #FFFFFF; }

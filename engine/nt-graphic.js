@@ -747,7 +747,7 @@
       var lgTop = pad.top + ruleH(RL.top) + u(24) + F.title.size * 0.08, lgRight = (T.logo.right != null ? T.logo.right : pad.side);
       var lgStyle = 'width:' + T.logo.width + 'px;opacity:' + T.logo.opacity + ';';
       if (noHead) {   // 이미지 오른쪽 위 안쪽에, 흰색(또는 검정) 로고
-        lgTop = pad.top + ruleH(RL.top) + u(24) + u(28); lgRight = pad.side + u(28);
+        lgTop = pad.top + ruleH(RL.top) + u(28); lgRight = u(32);
         lgStyle = 'width:' + T.logo.width + 'px;opacity:0.92;' + (spec.logoColor === 'black' ? 'filter:brightness(0);' : 'filter:brightness(0) invert(1) drop-shadow(0 0 ' + u(6) + 'px rgba(0,0,0,0.35));');
       }
       var lg = h('img', { class: 'nt-logo', src: window.NT_LOGO_SRC, style: lgStyle + 'right:' + lgRight + 'px;top:' + lgTop + 'px' });
