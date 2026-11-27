@@ -705,8 +705,9 @@
     }
     frame.appendChild(h('div', { class: 'nt-rule-top', style: ruleS(RL.top) }));
     var header = h('div', { class: 'nt-header' });
-    header.appendChild(h('div', { class: 'nt-title' }, esc(spec.title || '').replace(/\n/g, '<br>')));
-    if (spec.subtitle) header.appendChild(h('div', { class: 'nt-subtitle' }, esc(spec.subtitle)));
+    var br = function (t) { return esc(t).replace(/\n/g, '<br>'); };   // 문구 안 줄바꿈(\n)
+    header.appendChild(h('div', { class: 'nt-title', 'data-field': 'title' }, br(spec.title || '')));
+    if (spec.subtitle) header.appendChild(h('div', { class: 'nt-subtitle', 'data-field': 'subtitle' }, br(spec.subtitle)));
     frame.appendChild(header);
     var body = h('div', { class: 'nt-body' });
     if (spec.unit) body.appendChild(h('div', { class: 'nt-unit' }, '단위: ' + esc(spec.unit)));
@@ -714,9 +715,9 @@
     mount.appendChild(frame);
     RENDER[spec.type](spec, body);
     var foot = h('div', { class: 'nt-footer' }), notes = [].concat(spec.notes || spec.note || []);
-    notes.forEach(function (n) { foot.appendChild(h('p', null, '* ' + esc(n))); });
+    notes.forEach(function (n, i) { foot.appendChild(h('p', null, '* <span data-field="notes" data-i="' + i + '">' + br(n) + '</span>')); });
     var src = Array.isArray(spec.source) ? spec.source.filter(Boolean).join(', ') : spec.source;
-    if (src) foot.appendChild(h('p', null, '* 출처 : ' + esc(src)));
+    if (src) foot.appendChild(h('p', null, '* 출처 : <span data-field="source">' + br(src) + '</span>'));
     if (foot.childNodes.length) frame.appendChild(foot);
     frame.appendChild(h('div', { class: 'nt-rule-bottom', style: ruleS(RL.bottom) }));
     // 넘침 검사

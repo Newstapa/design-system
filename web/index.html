@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.13.6">
-<link rel="stylesheet" href="app.css?v=0.13.6">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.14.0">
+<link rel="stylesheet" href="app.css?v=0.14.0">
 </head>
 <body>
 <script>try { if (sessionStorage.getItem('nt-admin') === '1') document.body.classList.add('admin'); } catch (e) {}</script>
@@ -90,15 +90,19 @@
     <div id="stage" class="stage">
       <!-- 뉴스타파 기사 본문 폭: width 760px, padding 0 15px -->
       <article class="article-mock">
-        <p class="kicker">미리보기 · 기사 본문에 들어갔을 때의 모습</p>
-        <p>뉴스타파 취재진이 입수한 자료를 분석한 결과, 지난 5년간 관련 예산은 꾸준히 늘었지만 실제 집행률은 해마다 낮아진 것으로 나타났다. 담당 부처는 "사업 구조를 개편하는 과정에서 생긴 일시적인 현상"이라고 해명했지만, 전문가들은 집행 관리 체계 자체에 문제가 있다고 지적한다.</p>
-        <p>특히 지역별로 보면 차이가 더 뚜렷했다. 일부 지역은 배정된 예산의 절반도 쓰지 못했고, 반대로 몇몇 지역은 추가 예산을 요청할 만큼 수요가 몰렸다. 아래 그래픽은 그 차이를 한눈에 보여준다.</p>
+        <p class="kicker">미리보기 · 기사 본문에 들어갔을 때의 모습 <span class="kicker-hint">— 글자를 눌러 고칠 수 있습니다</span></p>
+        <div class="article-text" contenteditable="true" spellcheck="false" aria-label="기사 본문(앞)">
+          <p>뉴스타파 취재진이 입수한 자료를 분석한 결과, 지난 5년간 관련 예산은 꾸준히 늘었지만 실제 집행률은 해마다 낮아진 것으로 나타났다. 담당 부처는 "사업 구조를 개편하는 과정에서 생긴 일시적인 현상"이라고 해명했지만, 전문가들은 집행 관리 체계 자체에 문제가 있다고 지적한다.</p>
+          <p>특히 지역별로 보면 차이가 더 뚜렷했다. 일부 지역은 배정된 예산의 절반도 쓰지 못했고, 반대로 몇몇 지역은 추가 예산을 요청할 만큼 수요가 몰렸다. 아래 그래픽은 그 차이를 한눈에 보여준다.</p>
+        </div>
         <figure class="graphic">
           <div id="scaler" class="scaler"><div id="mount"></div></div>
           <div id="empty" class="empty">JSON을 붙여넣으면 여기에 그래픽이 나타납니다.</div>
         </figure>
-        <p>그래픽에서 보듯 격차는 일시적인 현상이 아니라 몇 년째 이어지고 있다. 한 지자체 관계자는 "현장의 수요를 제대로 반영하지 못한 채 예산이 일률적으로 나뉘고 있다"고 말했다.</p>
-        <p>뉴스타파는 관련 부처에 구체적인 개선 계획을 물었으나, 기사 마감 시점까지 답을 받지 못했다. 취재진은 후속 보도를 통해 예산 배분 과정을 더 자세히 살펴볼 예정이다.</p>
+        <div class="article-text" contenteditable="true" spellcheck="false" aria-label="기사 본문(뒤)">
+          <p>그래픽에서 보듯 격차는 일시적인 현상이 아니라 몇 년째 이어지고 있다. 한 지자체 관계자는 "현장의 수요를 제대로 반영하지 못한 채 예산이 일률적으로 나뉘고 있다"고 말했다.</p>
+          <p>뉴스타파는 관련 부처에 구체적인 개선 계획을 물었으나, 기사 마감 시점까지 답을 받지 못했다. 취재진은 후속 보도를 통해 예산 배분 과정을 더 자세히 살펴볼 예정이다.</p>
+        </div>
       </article>
     </div>
   </section>
@@ -138,9 +142,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.13.6"></script>
-<script src="../engine/nt-export-svg.js?v=0.13.6"></script>
-<script src="tuner.js?v=0.13.6"></script>
-<script src="app.js?v=0.13.6"></script>
+<script src="../engine/nt-graphic.js?v=0.14.0"></script>
+<script src="../engine/nt-export-svg.js?v=0.14.0"></script>
+<script src="tuner.js?v=0.14.0"></script>
+<script src="app.js?v=0.14.0"></script>
 </body>
 </html>

@@ -66,6 +66,57 @@
 
   var EMPTY_HTML = null;
   function resetEmpty() { if (EMPTY_HTML == null) EMPTY_HTML = emptyEl.innerHTML; emptyEl.innerHTML = EMPTY_HTML; emptyEl.classList.remove('designer-note'); }
+  // ---------- 미리보기에서 글자 고치기 ----------
+  // 그래픽의 제목·부제·주석·출처(data-field)를 눌러 고치면 JSON에 바로 반영된다. 엔터는 줄바꿈.
+  function plainEditable(el) {
+    try { el.contentEditable = 'plaintext-only'; } catch (e) { el.contentEditable = 'true'; }
+    if (el.contentEditable !== 'plaintext-only') el.contentEditable = 'true';
+  }
+  function insertBreak() { if (!document.execCommand('insertLineBreak')) document.execCommand('insertHTML', false, '<br>'); }
+  function readText(el) { return el.innerText.replace(/\u00a0/g, ' ').replace(/\n+$/, ''); }
+  function syncField(el) {
+    var spec; try { spec = extractJSON(specEl.value); } catch (e) { return; }
+    var f = el.getAttribute('data-field'), v = readText(el);
+    if (f === 'title' || f === 'subtitle') spec[f] = v;
+    else if (f === 'source') spec.source = v;
+    else if (f === 'notes') {
+      var arr = [].concat(spec.notes || spec.note || []); delete spec.note;
+      arr[Number(el.getAttribute('data-i')) || 0] = v; spec.notes = arr;
+    }
+    specEl.value = JSON.stringify(spec, null, 2);
+  }
+  function enableEdit() {
+    mount.querySelectorAll('[data-field]').forEach(function (el) {
+      plainEditable(el); el.spellcheck = false;
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); insertBreak(); syncField(el); }
+        if (e.key === 'Escape') el.blur();
+      });
+      el.addEventListener('paste', function (e) { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain')); });
+      el.addEventListener('input', function () { syncField(el); });
+      el.addEventListener('blur', function () {
+        syncField(el);
+        setTimeout(function () {   // 다른 문구로 옮겨 가는 중이면 그 문구를 마친 뒤 다시 그린다
+          var a = document.activeElement;
+          if (a && mount.contains(a) && a.hasAttribute('data-field')) return;
+          render();
+        }, 0);
+      });
+    });
+  }
+  function setupArticleEdit() {
+    try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {}
+    document.querySelectorAll('.article-text').forEach(function (box) {
+      box.addEventListener('paste', function (e) {   // 서식 없이 문단만
+        e.preventDefault();
+        var t = (e.clipboardData || window.clipboardData).getData('text/plain');
+        var html = t.split(/\r?\n\s*\r?\n|\r?\n/).map(function (line) { return line.trim(); }).filter(Boolean).map(function (line) { return '<p>' + esc(line) + '</p>'; }).join('');
+        document.execCommand('insertHTML', false, html || '');
+      });
+      box.addEventListener('input', function () { if (!box.querySelector('p')) box.innerHTML = '<p><br></p>'; fit(); });
+    });
+  }
+
   async function render() {
     var text = specEl.value.trim();
     if (EMPTY_HTML == null) EMPTY_HTML = emptyEl.innerHTML;
@@ -83,6 +134,7 @@
       var newAcc = (tokens.accents && tokens.accents[spec.accent]) ? spec.accent : tokens.defaultAccent;
       if (accentEl.value !== newAcc) { accentEl.value = newAcc; if (window.NTTuner) NTTuner.rebuild(); }
       showMessages(null, warns);
+      enableEdit();
       if (window.NTTuner) NTTuner.refreshSpec(spec);
     } catch (e) {
       mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true;
@@ -105,6 +157,7 @@
   var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
   // JPG(기사용) · SVG(일러스트레이터 수정용) · JSON(다시 불러오기용)을 한 번에 받는다
   async function save() {
+    if (document.activeElement && mount.contains(document.activeElement)) { document.activeElement.blur(); await wait(60); }   // 고치던 글자 반영 후 저장
     var frame = mount.firstElementChild; if (!frame) return;
     var spec; try { spec = extractJSON(specEl.value); } catch (e) { toast('JSON 형식 오류를 먼저 고쳐 주세요.'); return; }
     saveBtn.disabled = true; saveBtn.textContent = '저장 중…';
@@ -233,6 +286,7 @@
     $('copyPrompt').addEventListener('click', copyPrompt);
     $('copyFull').addEventListener('click', copyFull);
     window.addEventListener('resize', fit);
+    setupArticleEdit();
     // 스킬 적용 방법 팝업
     var dlg = $('skillDialog');
     $('skillInfo').addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
