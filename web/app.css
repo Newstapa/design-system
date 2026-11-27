@@ -37,6 +37,8 @@ body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -appl
 .brand-logo { height: 34px; width: auto; opacity: 0.85; flex: none; display: block; }
 /* 디자이너 모드: 로고를 2초 길게 누르면 켜고 끈다 */
 body:not(.admin) .admin-only { display: none !important; }
+body.admin { --page: #D9DCE1; }   /* 디자이너 모드: 바탕을 한 단계 어둡게 */
+html:has(body.admin) { background: #D9DCE1; }
 .brand-mark { position: relative; flex: none; display: block; cursor: default; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: none; }
 .brand-mark .brand-logo { pointer-events: none; transition: transform .25s; }
 .brand-mark.holding .brand-logo { transform: scale(0.94); transition: transform 2s linear; }
