@@ -181,7 +181,9 @@
       rects.forEach(function (el) { el.setAttribute('x', sw / 2); el.setAttribute('y', sw / 2); el.setAttribute('width', w - sw); el.setAttribute('height', hh - sw); el.setAttribute('rx', Math.max(0, r - sw / 2)); });
       var rw = w - sw, rh = hh - sw, rr = Math.min(Math.max(0, r - sw / 2), rw / 2, rh / 2);
       var per = 2 * (rw + rh - 4 * rr) + 2 * Math.PI * rr;
-      startAt = ((rw / 2 - rr) / per) * 100;   // 위쪽 가운데에서 출발
+      var mb = mark.getBoundingClientRect(), bb = bar.getBoundingClientRect();
+      var sx = (mb.left + mb.width / 2) - bb.left - sw / 2;   // 로고 바로 위에서 출발
+      startAt = (Math.min(Math.max(0, sx - rr), rw - 2 * rr) / per) * 100;
     }
     function setP(v) { p = v; fillRect.setAttribute('stroke-dasharray', (v * 100).toFixed(3) + ' ' + (100 - v * 100 + 0.001).toFixed(3)); fillRect.setAttribute('stroke-dashoffset', (-startAt).toFixed(3)); }
     sizeRing(); setP(0); window.addEventListener('resize', sizeRing);
