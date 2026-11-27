@@ -40,6 +40,8 @@ body { color: var(--text); font-family: 'Pretendard Variable', Pretendard, -appl
 .brand-text p { font-size: 14px; color: var(--sub); margin-top: 2px; }
 .topnav { display: flex; gap: 8px; flex: none; }
 .pill-link { font-size: 14px; font-weight: 600; color: var(--text); text-decoration: none; padding: 10px 16px; border-radius: 999px; background: var(--soft); }
+button.pill-link { font-family: inherit; line-height: inherit; border: 0; cursor: pointer; }
+.modal-head h2 small { font-size: 0.72em; font-weight: 600; color: var(--sub); margin-left: 4px; }
 .pill-link:hover { background: #E8E9EC; }
 .pill-link.primary { background: var(--primary); color: #FFFFFF; }
 .pill-link.primary:hover { background: var(--primary-hover); }
