@@ -677,12 +677,15 @@
     if (!spec.source) warn('출처(source)가 없습니다. 반드시 넣으세요.');
     if (!RENDER[spec.type]) throw new Error('지원하지 않는 type: ' + spec.type + ' (bar, line, slope, dot, pie, table, timeline, map, stat, stack)');
 
+    var RL = T.rules || { top: { visible: true, width: 2 }, bottom: { visible: true, width: 1 } };
+    var ruleH = function (r) { return r ? Math.max(0, Number(r.width) || 0) : 0; };
+    var ruleS = function (r) { return 'height:' + ruleH(r) + 'px' + (r && r.visible === false ? ';background:transparent' : ''); };
     var frame = h('div', { class: 'nt-frame', id: 'nt-frame', style: 'width:' + cw + 'px;padding:' + pad.top + 'px ' + pad.side + 'px ' + pad.bottom + 'px;--pad-side:' + pad.side + 'px' });
     if (spec.logo !== false) {
-      var lg = h('img', { class: 'nt-logo', src: window.NT_LOGO_SRC, style: 'width:' + T.logo.width + 'px;opacity:' + T.logo.opacity + ';right:' + pad.side + 'px;top:' + (pad.top + u(2) + u(24) + F.title.size * 0.08) + 'px' });
+      var lg = h('img', { class: 'nt-logo', src: window.NT_LOGO_SRC, style: 'width:' + T.logo.width + 'px;opacity:' + T.logo.opacity + ';right:' + pad.side + 'px;top:' + (pad.top + ruleH(RL.top) + u(24) + F.title.size * 0.08) + 'px' });
       frame.appendChild(lg);
     }
-    frame.appendChild(h('div', { class: 'nt-rule-top' }));
+    frame.appendChild(h('div', { class: 'nt-rule-top', style: ruleS(RL.top) }));
     var header = h('div', { class: 'nt-header' });
     header.appendChild(h('div', { class: 'nt-title' }, esc(spec.title || '').replace(/\n/g, '<br>')));
     if (spec.subtitle) header.appendChild(h('div', { class: 'nt-subtitle' }, esc(spec.subtitle)));
@@ -697,7 +700,7 @@
     var src = Array.isArray(spec.source) ? spec.source.filter(Boolean).join(', ') : spec.source;
     if (src) foot.appendChild(h('p', null, '* 출처 : ' + esc(src)));
     if (foot.childNodes.length) frame.appendChild(foot);
-    frame.appendChild(h('div', { class: 'nt-rule-bottom' }));
+    frame.appendChild(h('div', { class: 'nt-rule-bottom', style: ruleS(RL.bottom) }));
     // 넘침 검사
     var fr = frame.getBoundingClientRect();
     frame.querySelectorAll('svg, table, .nt-stats, .nt-tl').forEach(function (e) { if (e.getBoundingClientRect().right > fr.right - pad.side + 2) warn('본문 요소가 오른쪽 여백을 넘었습니다. 라벨을 줄이세요.'); });

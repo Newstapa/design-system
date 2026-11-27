@@ -34,6 +34,13 @@
       { label: '제목·본문 글자', path: 'color.ink', type: 'color' },
       { label: '부제·축·출처 글자', path: 'color.subtext', type: 'color' }
     ] },
+    { title: '위아래 선', note: '끄면 선만 빠지고 간격은 그대로', rows: [
+      { label: '위 선', path: 'rules.top.visible', type: 'toggle' },
+      { label: '위 선 두께', path: 'rules.top.width', min: 0.5, max: 10, step: 0.5, unit: 'px' },
+      { label: '아래 선', path: 'rules.bottom.visible', type: 'toggle' },
+      { label: '아래 선 두께', path: 'rules.bottom.width', min: 0.5, max: 10, step: 0.5, unit: 'px' },
+      { label: '선 색', path: 'color.rule', type: 'color' }
+    ] },
     { title: '여백·크기', note: '저장 가로 = 그래픽 너비 × 저장 배율', rows: [
       { label: '저장 배율', path: 'canvas.scale', min: 1, max: 3, step: 0.1, unit: '×' },
       { label: '그래픽 너비', path: 'canvas.width', min: 800, max: 1600, step: 10, unit: 'px' },
@@ -99,7 +106,12 @@
     var cur = getPath(effective(), path), changed = getPath(overrides, path) !== undefined;
     wrap.appendChild(el('label', 'tune-label', row.label));
     var ctl = el('div', 'tune-ctl');
-    if (row.type === 'color') {
+    if (row.type === 'toggle') {
+      var sw = el('label', 'tune-switch'), cb = el('input'); cb.type = 'checkbox'; cb.checked = cur !== false;
+      sw.appendChild(cb); sw.appendChild(el('span', 'tune-switch-ui')); sw.appendChild(el('span', 'tune-switch-txt', cb.checked ? '넣기' : '빼기'));
+      cb.addEventListener('change', function () { sw.lastChild.textContent = cb.checked ? '넣기' : '빼기'; apply(path, cb.checked, baseVal); });
+      ctl.appendChild(sw); ctl.appendChild(el('span', 'tune-fill'));
+    } else if (row.type === 'color') {
       var pick = el('input'); pick.type = 'color'; pick.value = cur;
       var hex = el('input', 'tune-num tune-hex'); hex.value = String(cur).toUpperCase(); hex.maxLength = 7; hex.spellcheck = false;
       pick.addEventListener('input', function () { hex.value = pick.value.toUpperCase(); apply(path, pick.value.toUpperCase(), baseVal); });
