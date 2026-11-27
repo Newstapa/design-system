@@ -110,6 +110,9 @@ body { -webkit-font-smoothing: antialiased; }
 .nt-text-items .tx { font-size: var(--body-size); color: var(--text); line-height: 1.6; }
 .nt-text-items .hd + .tx { margin-top: 0.35em; }
 .nt-text-closing { margin-top: calc(28px * var(--u)); padding-top: calc(24px * var(--u)); border-top: calc(2px * var(--u)) solid var(--ink); font-size: calc(var(--body-size) * 1.12); font-weight: 700; color: var(--ink); line-height: 1.55; }
+.nt-image { display: block; width: 100%; height: auto; border-radius: 0; }
+.nt-image-empty { display: flex; align-items: center; justify-content: center; height: calc(420px * var(--u)); background: var(--panel); color: var(--subtext); font-size: var(--label-size); }
+.nt-nohead .nt-body { margin-top: 0; }
 .nt-textbox .mk { font-weight: 700; color: var(--ink); background: linear-gradient(transparent 58%, var(--pointTint) 58%); }
 
 svg text { font-family: var(--font); }

@@ -17,7 +17,7 @@ import argparse, base64, json, pathlib, sys, tempfile
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
-def build_html(spec: dict) -> str:
+def build_html(spec: dict, base: pathlib.Path = ROOT) -> str:
     tokens = json.loads((ROOT / "assets/tokens.json").read_text(encoding="utf-8"))
     css = (ROOT / "engine/nt-graphic.css").read_text(encoding="utf-8")
     font_uri = (ROOT / "assets/fonts/PretendardVariable.woff2").as_uri()
@@ -28,9 +28,18 @@ def build_html(spec: dict) -> str:
     geo = ""
     if spec.get("type") == "map" or any(b.get("type") == "map" for b in spec.get("blocks", [])):
         geo = "window.NT_GEO_KOREA=" + (ROOT / "assets/maps/korea-sido.geo.json").read_text(encoding="utf-8") + ";"
+    # 이미지 유형: 로컬 파일이면 data URL로 넣는다 (spec 파일 기준 상대 경로)
+    imgs = ""
+    im = spec.get("image")
+    if spec.get("type") == "image" and im and not str(im).startswith(("data:", "http://", "https://")):
+        ip = (base / im) if not pathlib.Path(im).is_absolute() else pathlib.Path(im)
+        if ip.exists():
+            import mimetypes
+            mt = mimetypes.guess_type(str(ip))[0] or "image/png"
+            imgs = "window.NT_IMAGES=" + json.dumps({im: f"data:{mt};base64," + base64.b64encode(ip.read_bytes()).decode()}) + ";"
     return f"""<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
 <style>{css}</style></head><body><div id="mount"></div>
-<script>window.NT_LOGO_SRC='data:image/png;base64,{logo}';{geo}</script>
+<script>window.NT_LOGO_SRC='data:image/png;base64,{logo}';{geo}{imgs}</script>
 <script>{js}</script>
 <script>
 window.__NT_TOKENS={json.dumps(tokens, ensure_ascii=False)};
@@ -56,7 +65,7 @@ def main():
     spec = json.loads(pathlib.Path(a.spec).read_text(encoding="utf-8"))
     tokens = json.loads((ROOT / "assets/tokens.json").read_text(encoding="utf-8"))
     scale = a.scale or tokens["canvas"]["scale"]
-    html = build_html(spec)
+    html = build_html(spec, pathlib.Path(a.spec).resolve().parent)
     tmp = pathlib.Path(tempfile.mkdtemp()) / "graphic.html"
     tmp.write_text(html, encoding="utf-8")
     if a.html:
@@ -72,6 +81,7 @@ def main():
         pg = b.new_page(viewport={"width": (spec.get("width") or tokens["canvas"]["width"]) + 40, "height": 800}, device_scale_factor=scale)
         pg.goto(tmp.as_uri())
         pg.wait_for_function("window.__NT_DONE === true", timeout=20000)
+        pg.wait_for_function("Array.from(document.images).every(function(i){return i.complete})", timeout=20000)
         err = pg.evaluate("window.__NT_ERR || null")
         if err:
             b.close()

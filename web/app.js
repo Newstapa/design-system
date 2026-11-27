@@ -69,7 +69,7 @@
   // ---------- 미리보기에서 글자 고치기 ----------
   // 그림(막대·꺾은선·원)이 없는 유형(텍스트 강조·표·숫자 카드, 이들로만 된 stack)에서만 켠다.
   // 고칠 수 있는 글자에는 엔진이 data-path(JSON 경로)를 달아 둔다. 엔터는 줄바꿈, **강조**는 유지.
-  var EDITABLE_TYPES = ['text', 'table', 'stat'];
+  var EDITABLE_TYPES = ['text', 'table', 'stat', 'image'];
   function isEditable(spec) {
     if (!spec) return false;
     if (spec.type === 'stack') return (spec.blocks || []).length > 0 && spec.blocks.every(function (b) { return EDITABLE_TYPES.indexOf(b.type) >= 0; });
@@ -132,6 +132,35 @@
       });
     });
   }
+  // ---------- 이미지 넣기 (버튼 또는 미리보기에 끌어다 놓기) ----------
+  window.NT_IMAGES = window.NT_IMAGES || {};
+  function useImage(file) {
+    if (!file || !/^image\//.test(file.type)) { toast('이미지 파일(JPG·PNG 등)만 넣을 수 있습니다.'); return; }
+    var rd = new FileReader();
+    rd.onload = function () {
+      var name = file.name || 'image';
+      window.NT_IMAGES[name] = rd.result;
+      var spec = null; try { spec = extractJSON(specEl.value); } catch (e) {}
+      if (spec && spec.type === 'image') spec.image = name;
+      else spec = { type: 'image', image: name, source: '출처를 입력하세요' };
+      specEl.value = JSON.stringify(spec, null, 2);
+      $('example').value = '';
+      render();
+      toast('이미지를 넣었습니다. 제목이 필요하면 JSON에 "title"을 넣으세요. 출처를 눌러 고칠 수 있습니다.');
+    };
+    rd.readAsDataURL(file);
+  }
+  function setupImageInput() {
+    var inp = $('imageFile');
+    inp.addEventListener('change', function () { useImage(inp.files[0]); inp.value = ''; });
+    var fig = document.querySelector('.graphic');
+    ['dragenter', 'dragover'].forEach(function (t) { fig.addEventListener(t, function (e) { if (e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types, 'Files') >= 0) { e.preventDefault(); fig.classList.add('dragover'); } }); });
+    ['dragleave', 'drop'].forEach(function (t) { fig.addEventListener(t, function () { fig.classList.remove('dragover'); }); });
+    fig.addEventListener('drop', function (e) { if (e.dataTransfer && e.dataTransfer.files.length) { e.preventDefault(); useImage(e.dataTransfer.files[0]); } });
+    // 이미지가 다 읽힌 뒤 크기 다시 맞추기
+    mount.addEventListener('load', function (e) { if (e.target.tagName === 'IMG') fit(); }, true);
+  }
+
   function setupArticleEdit() {
     try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {}
     document.querySelectorAll('.article-text').forEach(function (box) {
@@ -201,7 +230,9 @@
     } catch (e) { fail.push('SVG(' + (e && e.message || e) + ')'); }
     await wait(300);
     try {
-      download(new Blob([JSON.stringify(spec, null, 2) + '\n'], { type: 'application/json' }), base + '.json'); done.push('JSON');
+      var outSpec = JSON.parse(JSON.stringify(spec));
+      if (outSpec.type === 'image' && window.NT_IMAGES && window.NT_IMAGES[outSpec.image]) outSpec.image = window.NT_IMAGES[outSpec.image];   // 다시 불러올 수 있게 이미지를 JSON 안에 담는다
+      download(new Blob([JSON.stringify(outSpec, null, 2) + '\n'], { type: 'application/json' }), base + '.json'); done.push('JSON');
     } catch (e) { fail.push('JSON(' + (e && e.message || e) + ')'); }
     scaler.style.transform = prev;
     var sz = outSize();
@@ -316,6 +347,7 @@
     $('copyFull').addEventListener('click', copyFull);
     window.addEventListener('resize', fit);
     setupArticleEdit();
+    setupImageInput();
     // 스킬 적용 방법 팝업
     var dlg = $('skillDialog');
     $('skillInfo').addEventListener('click', function () { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });

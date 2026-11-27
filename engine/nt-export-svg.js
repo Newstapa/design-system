@@ -117,7 +117,7 @@
 
     function img(el, cs) {
       var r = el.getBoundingClientRect(), c = document.createElement('canvas');
-      c.width = el.naturalWidth; c.height = el.naturalHeight; c.getContext('2d').drawImage(el, 0, 0);
+      c.width = el.naturalWidth; c.height = el.naturalHeight; var cx = c.getContext('2d'); if (cs.filter && cs.filter !== 'none') cx.filter = cs.filter; cx.drawImage(el, 0, 0);
       var op = parseFloat(cs.opacity);
       out.push('<image x="' + X(r.left) + '" y="' + Y(r.top) + '" width="' + n(r.width) + '" height="' + n(r.height) + '"' + (op < 1 ? ' opacity="' + n(op) + '"' : '') + ' href="' + c.toDataURL('image/png') + '"/>');
     }

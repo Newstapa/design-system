@@ -667,6 +667,15 @@
     body.appendChild(box);
   }
 
+  // ---------- 이미지 (사진·캡처를 뉴스타파 틀에 넣기) ----------
+  // image: 웹에서 올린 파일 이름(window.NT_IMAGES에 담김) 또는 data:/http 주소.
+  function imageSrc(spec) { var m = window.NT_IMAGES || {}; return m[spec.image] || spec.image || ''; }
+  function renderImage(spec, body) {
+    var src = imageSrc(spec);
+    if (!src) { warn('이미지(image)가 없습니다. 이미지를 넣어 주세요.'); body.appendChild(h('div', { class: 'nt-image-empty' }, '이미지를 넣어 주세요')); return; }
+    body.appendChild(h('img', { class: 'nt-image', src: src, alt: spec.alt || spec.title || '' }));
+  }
+
   // ---------- 조합 ----------
   function renderStack(spec, body) {
     spec.blocks.forEach(function (b, i) {
@@ -676,7 +685,7 @@
     });
   }
 
-  var RENDER = { dot: renderDot, slope: renderSlope, bar: renderBar, line: renderLine, pie: renderPie, table: renderTable, timeline: renderTimeline, map: renderMap, stat: renderStat, text: renderText, stack: renderStack };
+  var RENDER = { dot: renderDot, slope: renderSlope, bar: renderBar, line: renderLine, pie: renderPie, table: renderTable, timeline: renderTimeline, map: renderMap, stat: renderStat, text: renderText, image: renderImage, stack: renderStack };
 
   // ---------- 디자이너에게 넘기는 유형 ----------
   // 아래 유형은 AI·엔진으로 만들지 않고 디자이너에게 요청한다 (guide.md 6장).
@@ -723,17 +732,25 @@
     root.setProperty('--body-size', F.body.size + 'px'); root.setProperty('--label-size', F.label.size + 'px');
     root.setProperty('--u', U);
 
-    if (!spec.title) warn('제목(title)이 없습니다.');
-    else if (spec.title.replace(/\n/g, '').length > T.limits.titleMaxChars) warn('제목이 ' + spec.title.length + '자입니다. ' + T.limits.titleMaxChars + '자 이내로 줄이거나 부제로 나누세요.');
+    var noHead = spec.type === 'image' && !spec.title && !spec.subtitle;   // 이미지만 넣는 형태: 제목 없이 로고를 이미지 위에
+    if (!spec.title && !noHead) warn('제목(title)이 없습니다.');
+    else if (spec.title && spec.title.replace(/\n/g, '').length > T.limits.titleMaxChars) warn('제목이 ' + spec.title.length + '자입니다. ' + T.limits.titleMaxChars + '자 이내로 줄이거나 부제로 나누세요.');
     if (!spec.source && spec.type !== 'text') warn('출처(source)가 없습니다. 반드시 넣으세요.');
-    if (!RENDER[spec.type]) throw new Error('지원하지 않는 type: ' + spec.type + ' (bar, line, pie, table, stat, text, stack). 그 밖의 유형은 디자이너에게 문의해 주세요.');
+    if (/입력하세요/.test(String(spec.source || ''))) warn('출처를 실제 출처로 바꿔 주세요.');
+    if (!RENDER[spec.type]) throw new Error('지원하지 않는 type: ' + spec.type + ' (bar, line, pie, table, stat, text, image, stack). 그 밖의 유형은 디자이너에게 문의해 주세요.');
 
     var RL = T.rules || { top: { visible: true, width: 2 }, bottom: { visible: true, width: 1 } };
     var ruleH = function (r) { return r ? Math.max(0, Number(r.width) || 0) : 0; };
     var ruleS = function (r) { return 'height:' + ruleH(r) + 'px' + (r && r.visible === false ? ';background:transparent' : ''); };
     var frame = h('div', { class: 'nt-frame nt-type-' + spec.type, id: 'nt-frame', style: 'width:' + cw + 'px;padding:' + pad.top + 'px ' + pad.side + 'px ' + pad.bottom + 'px;--pad-side:' + pad.side + 'px' });
     if (spec.logo !== false) {
-      var lg = h('img', { class: 'nt-logo', src: window.NT_LOGO_SRC, style: 'width:' + T.logo.width + 'px;opacity:' + T.logo.opacity + ';right:' + (T.logo.right != null ? T.logo.right : pad.side) + 'px;top:' + (pad.top + ruleH(RL.top) + u(24) + F.title.size * 0.08) + 'px' });
+      var lgTop = pad.top + ruleH(RL.top) + u(24) + F.title.size * 0.08, lgRight = (T.logo.right != null ? T.logo.right : pad.side);
+      var lgStyle = 'width:' + T.logo.width + 'px;opacity:' + T.logo.opacity + ';';
+      if (noHead) {   // 이미지 오른쪽 위 안쪽에, 흰색(또는 검정) 로고
+        lgTop = pad.top + ruleH(RL.top) + u(24) + u(28); lgRight = pad.side + u(28);
+        lgStyle = 'width:' + T.logo.width + 'px;opacity:0.92;' + (spec.logoColor === 'black' ? 'filter:brightness(0);' : 'filter:brightness(0) invert(1) drop-shadow(0 0 ' + u(6) + 'px rgba(0,0,0,0.35));');
+      }
+      var lg = h('img', { class: 'nt-logo', src: window.NT_LOGO_SRC, style: lgStyle + 'right:' + lgRight + 'px;top:' + lgTop + 'px' });
       frame.appendChild(lg);
     }
     frame.appendChild(h('div', { class: 'nt-rule-top', style: ruleS(RL.top) }));
@@ -741,7 +758,7 @@
     var br = function (t) { return esc(t).replace(/\n/g, '<br>'); };   // 문구 안 줄바꿈(\n)
     header.appendChild(h('div', { class: 'nt-title', 'data-path': 'title' }, br(spec.title || '')));
     if (spec.subtitle) header.appendChild(h('div', { class: 'nt-subtitle', 'data-path': 'subtitle' }, br(spec.subtitle)));
-    frame.appendChild(header);
+    if (!noHead) frame.appendChild(header); else frame.classList.add('nt-nohead');
     var body = h('div', { class: 'nt-body' });
     if (spec.unit) body.appendChild(h('div', { class: 'nt-unit' }, '단위: ' + esc(spec.unit)));
     frame.appendChild(body);
@@ -753,6 +770,7 @@
     if (src) foot.appendChild(h('p', null, '* 출처 : <span data-path="source">' + br(src) + '</span>'));
     if (foot.childNodes.length) frame.appendChild(foot);
     frame.appendChild(h('div', { class: 'nt-rule-bottom', style: ruleS(RL.bottom) }));
+    var lgEl = frame.querySelector('.nt-logo'); if (lgEl) frame.appendChild(lgEl);   // 로고를 맨 뒤로: SVG 저장 시 이미지 위에 그려지게
     // 넘침 검사
     var fr = frame.getBoundingClientRect();
     frame.querySelectorAll('svg, table, .nt-stats, .nt-tl').forEach(function (e) { if (e.getBoundingClientRect().right > fr.right - pad.side + 2) warn('본문 요소가 오른쪽 여백을 넘었습니다. 라벨을 줄이세요.'); });
