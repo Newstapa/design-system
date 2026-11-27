@@ -148,6 +148,8 @@
   function updateCount() { var n = changedCount(); countEl.textContent = n ? '바뀐 값 ' + n + '개' : '기본값 그대로'; countEl.classList.toggle('on', n > 0); }
 
   function build() {
+    // 다시 그려도 스크롤 위치가 튀지 않게 패널·페이지 위치를 기억했다 되돌린다
+    var keepPanel = root.scrollTop, keepX = window.scrollX, keepY = window.scrollY;
     root.querySelectorAll('.tune-group.common').forEach(function (g) { g.remove(); });
     var anchor = root.querySelector('.tune-actions');
     GROUPS.forEach(function (g) {
@@ -157,6 +159,7 @@
       root.insertBefore(box, anchor);
     });
     updateCount();
+    root.scrollTop = keepPanel; window.scrollTo(keepX, keepY);
   }
 
   // 이 그래픽만

@@ -176,7 +176,7 @@
       article.classList.toggle('is-mobile', v === 'mobile');
       document.querySelectorAll('.view-tab').forEach(function (x) { var on = x.getAttribute('data-view') === v; x.classList.toggle('active', on); x.setAttribute('aria-selected', on); });
       try { localStorage.setItem('nt-preview-view', v); } catch (e) {}
-      fit(); setTimeout(fit, 250);
+      fit();
     }
     document.querySelectorAll('.view-tab').forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
     try { if (localStorage.getItem('nt-preview-view') === 'mobile') setView('mobile'); } catch (e) {}
