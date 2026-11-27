@@ -47,7 +47,7 @@ assets/fonts, logo.png, maps/  Pretendard 글꼴, 로고, 한국 시·도 지도
 | 바꾸고 싶은 것 | 고칠 파일 | 다시 배포할 것 |
 |---|---|---|
 | 색, 글자 크기, 여백 | `assets/tokens.json` | 없음 (push하면 바로 반영) |
-| 화면을 보며 값 찾기 | Tapa Chart '디자인 조정' 탭 → '변경값 복사'를 Claude에 붙여넣거나 'tokens.json 받기'로 파일 교체 | 없음 |
+| 화면을 보며 값 찾기 | Tapa Chart '디자인 조정' 탭 → '변경값 복사'를 Claude에 붙여넣어 반영 | 없음 |
 | 강조색 추가·수정 | `assets/tokens.json`의 `accents` + `guide.md` 색 표 | 없음 |
 | 디자인 원칙, 문구 | `guide.md`, `for-ai/*.md` | 없음 |
 | 그래픽 모양, 새 유형 | `engine/`, `examples/` | 없음. Tapa Chart는 `web/index.html`의 `?v=` 숫자를 올림 |

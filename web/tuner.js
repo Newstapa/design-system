@@ -211,12 +211,10 @@
     specBox = el('section', 'tune-group spec'); root.appendChild(specBox);
     var actions = el('div', 'tune-actions');
     var bCopy = el('button', 'btn primary', '변경값 복사 (지침 반영용)'); bCopy.type = 'button';
-    var bDown = el('button', 'btn', 'tokens.json 받기'); bDown.type = 'button';
-    var bReset = el('button', 'btn ghost', '모두 되돌리기'); bReset.type = 'button';
-    actions.appendChild(bCopy); actions.appendChild(bDown); actions.appendChild(bReset);
+    var bReset = el('button', 'btn outline', '모두 되돌리기'); bReset.type = 'button';
+    actions.appendChild(bCopy); actions.appendChild(bReset);
     root.appendChild(actions);
     bCopy.addEventListener('click', function () { var t = copyText(); opts.copy(t); });
-    bDown.addEventListener('click', function () { opts.download(new Blob([JSON.stringify(effective(), null, 2) + '\n'], { type: 'application/json' }), 'tokens.json'); });
     bReset.addEventListener('click', function () { overrides = {}; save(); build(); onChange(); });
     build();
   }
