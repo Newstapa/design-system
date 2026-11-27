@@ -44,7 +44,7 @@ body:not(.admin) .admin-only { display: none !important; }
 @keyframes brandPop { 0% { transform: scale(0.94); } 55% { transform: scale(1.12) rotate(-3deg); } 100% { transform: scale(1); } }
 .topbar { position: relative; }
 .hold-ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; opacity: 0; transition: opacity .2s; z-index: 1; }
-.hold-ring rect { fill: none; stroke-width: 3; }
+.hold-ring rect { fill: none; stroke-width: 1; }
 .hold-ring .track { stroke: rgba(0, 0, 0, 0.06); }
 .hold-ring .fill { stroke: var(--accent); stroke-linecap: round; }
 .topbar.holding .hold-ring, .topbar.releasing .hold-ring { opacity: 1; }

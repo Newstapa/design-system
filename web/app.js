@@ -176,7 +176,7 @@
     var mark = $('brandMark'), bar = $('topbar'), raf = 0, start = 0, p = 0, holding = false;
     var ring = bar.querySelector('.hold-ring'), rects = ring.querySelectorAll('rect'), fillRect = ring.querySelector('.fill'), startAt = 0;
     function sizeRing() {   // 헤더 크기에 맞춰 테두리 사각형을 다시 잰다
-      var w = bar.offsetWidth, hh = bar.offsetHeight, sw = 3, r = parseFloat(getComputedStyle(bar).borderTopLeftRadius) || 0;
+      var w = bar.offsetWidth, hh = bar.offsetHeight, sw = 1, r = parseFloat(getComputedStyle(bar).borderTopLeftRadius) || 0;
       ring.setAttribute('viewBox', '0 0 ' + w + ' ' + hh);
       rects.forEach(function (el) { el.setAttribute('x', sw / 2); el.setAttribute('y', sw / 2); el.setAttribute('width', w - sw); el.setAttribute('height', hh - sw); el.setAttribute('rx', Math.max(0, r - sw / 2)); });
       var rw = w - sw, rh = hh - sw, rr = Math.min(Math.max(0, r - sw / 2), rw / 2, rh / 2);
