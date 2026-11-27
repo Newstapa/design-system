@@ -48,6 +48,7 @@
       { label: '좌우 여백', path: 'canvas.padding.side', min: 0, max: 120, step: 2, unit: 'px' },
       { label: '아래 여백', path: 'canvas.padding.bottom', min: 0, max: 120, step: 2, unit: 'px' },
       { label: '로고 너비', path: 'logo.width', min: 60, max: 240, step: 2, unit: 'px' },
+      { label: '로고 오른쪽 여백', path: 'logo.right', min: 0, max: 120, step: 2, unit: 'px' },
       { label: '로고 진하기', path: 'logo.opacity', min: 0.1, max: 1, step: 0.02 }
     ] }
   ];

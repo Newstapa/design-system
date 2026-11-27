@@ -682,7 +682,7 @@
     var ruleS = function (r) { return 'height:' + ruleH(r) + 'px' + (r && r.visible === false ? ';background:transparent' : ''); };
     var frame = h('div', { class: 'nt-frame', id: 'nt-frame', style: 'width:' + cw + 'px;padding:' + pad.top + 'px ' + pad.side + 'px ' + pad.bottom + 'px;--pad-side:' + pad.side + 'px' });
     if (spec.logo !== false) {
-      var lg = h('img', { class: 'nt-logo', src: window.NT_LOGO_SRC, style: 'width:' + T.logo.width + 'px;opacity:' + T.logo.opacity + ';right:' + pad.side + 'px;top:' + (pad.top + ruleH(RL.top) + u(24) + F.title.size * 0.08) + 'px' });
+      var lg = h('img', { class: 'nt-logo', src: window.NT_LOGO_SRC, style: 'width:' + T.logo.width + 'px;opacity:' + T.logo.opacity + ';right:' + (T.logo.right != null ? T.logo.right : pad.side) + 'px;top:' + (pad.top + ruleH(RL.top) + u(24) + F.title.size * 0.08) + 'px' });
       frame.appendChild(lg);
     }
     frame.appendChild(h('div', { class: 'nt-rule-top', style: ruleS(RL.top) }));
