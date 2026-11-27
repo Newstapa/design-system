@@ -4,14 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.13.0">
-<link rel="stylesheet" href="app.css?v=0.13.0">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.13.2">
+<link rel="stylesheet" href="app.css?v=0.13.2">
 </head>
 <body>
 <script>try { if (localStorage.getItem('nt-admin') === '1') document.body.classList.add('admin'); } catch (e) {}</script>
-<header class="topbar">
+<header class="topbar" id="topbar">
+  <svg class="hold-ring" aria-hidden="true"><rect class="track" pathLength="100"/><rect class="fill" pathLength="100"/></svg>
   <div class="brand">
-    <span class="brand-mark" id="brandMark"><img class="brand-logo" src="../assets/newstapa-logo.svg" alt="뉴스타파" draggable="false"><span class="hold-ring" aria-hidden="true"></span></span>
+    <span class="brand-mark" id="brandMark"><img class="brand-logo" src="../assets/newstapa-logo.svg" alt="뉴스타파" draggable="false"></span>
     <div class="brand-text">
       <h1>그래픽 렌더러</h1>
       <p>뉴스타파 디자인 가이드대로 시각화를 합니다.</p>
@@ -137,9 +138,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.13.0"></script>
-<script src="../engine/nt-export-svg.js?v=0.13.0"></script>
-<script src="tuner.js?v=0.13.0"></script>
-<script src="app.js?v=0.13.0"></script>
+<script src="../engine/nt-graphic.js?v=0.13.2"></script>
+<script src="../engine/nt-export-svg.js?v=0.13.2"></script>
+<script src="tuner.js?v=0.13.2"></script>
+<script src="app.js?v=0.13.2"></script>
 </body>
 </html>

@@ -173,8 +173,18 @@
   }
   function setupAdmin() {
     applyAdmin(isAdmin, false);
-    var mark = $('brandMark'), raf = 0, start = 0, p = 0, holding = false;
-    function setP(v) { p = v; mark.style.setProperty('--p', v.toFixed(4)); }
+    var mark = $('brandMark'), bar = $('topbar'), raf = 0, start = 0, p = 0, holding = false;
+    var ring = bar.querySelector('.hold-ring'), rects = ring.querySelectorAll('rect'), fillRect = ring.querySelector('.fill'), startAt = 0;
+    function sizeRing() {   // 헤더 크기에 맞춰 테두리 사각형을 다시 잰다
+      var w = bar.offsetWidth, hh = bar.offsetHeight, sw = 3, r = parseFloat(getComputedStyle(bar).borderTopLeftRadius) || 0;
+      ring.setAttribute('viewBox', '0 0 ' + w + ' ' + hh);
+      rects.forEach(function (el) { el.setAttribute('x', sw / 2); el.setAttribute('y', sw / 2); el.setAttribute('width', w - sw); el.setAttribute('height', hh - sw); el.setAttribute('rx', Math.max(0, r - sw / 2)); });
+      var rw = w - sw, rh = hh - sw, rr = Math.min(Math.max(0, r - sw / 2), rw / 2, rh / 2);
+      var per = 2 * (rw + rh - 4 * rr) + 2 * Math.PI * rr;
+      startAt = ((rw / 2 - rr) / per) * 100;   // 위쪽 가운데에서 출발
+    }
+    function setP(v) { p = v; fillRect.setAttribute('stroke-dasharray', (v * 100).toFixed(3) + ' ' + (100 - v * 100 + 0.001).toFixed(3)); fillRect.setAttribute('stroke-dashoffset', (-startAt).toFixed(3)); }
+    sizeRing(); setP(0); window.addEventListener('resize', sizeRing);
     function tick(now) {
       if (!holding) return;
       setP(Math.min(1, (now - start) / HOLD_MS));
@@ -184,23 +194,23 @@
     function begin(e) {
       if (e.button != null && e.button !== 0) return;
       e.preventDefault();
-      holding = true; start = performance.now(); mark.classList.remove('releasing', 'pop'); mark.classList.add('holding');
+      sizeRing(); holding = true; start = performance.now(); bar.classList.remove('releasing'); mark.classList.remove('pop'); mark.classList.add('holding'); bar.classList.add('holding');
       cancelAnimationFrame(raf); raf = requestAnimationFrame(tick);
     }
     function finish() {
-      holding = false; mark.classList.remove('holding');
+      holding = false; mark.classList.remove('holding'); bar.classList.remove('holding'); bar.classList.add('releasing');
       void mark.offsetWidth; mark.classList.add('pop');
-      setTimeout(function () { setP(0); mark.classList.remove('pop'); }, 450);
+      setTimeout(function () { setP(0); mark.classList.remove('pop'); bar.classList.remove('releasing'); }, 450);
       if (navigator.vibrate) try { navigator.vibrate(30); } catch (e) {}
       applyAdmin(!isAdmin, true);
     }
     function cancel() {
       if (!holding) return;
-      holding = false; cancelAnimationFrame(raf); mark.classList.remove('holding'); mark.classList.add('releasing');
+      holding = false; cancelAnimationFrame(raf); mark.classList.remove('holding'); bar.classList.remove('holding'); bar.classList.add('releasing');
       var from = p, t0 = performance.now();
       (function back(now) {   // 게이지가 되감기며 사라진다
         var k = Math.min(1, (now - t0) / 250); setP(from * (1 - k));
-        if (k < 1 && !holding) requestAnimationFrame(back); else if (!holding) mark.classList.remove('releasing');
+        if (k < 1 && !holding) requestAnimationFrame(back); else if (!holding) bar.classList.remove('releasing');
       })(t0);
     }
     mark.addEventListener('pointerdown', begin);
