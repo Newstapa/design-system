@@ -137,6 +137,8 @@ button.pill-link { font-family: inherit; line-height: inherit; border: 0; cursor
 
 /* 탭 (알약 세그먼트) */
 .tabs { display: inline-flex; padding: 4px; gap: 4px; background: var(--soft); border-radius: 999px; }
+.editor .tabs { flex: 1 1 100%; }   /* 탭 줄은 항상 한 줄 전체, 강조색·예시는 그 아래 */
+.editor .tabs .tab { flex: 1; }
 .tab { font: inherit; font-size: 14px; font-weight: 600; color: var(--sub); height: 34px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; cursor: pointer; }
 .tab:hover { color: var(--text); }
 .tab.active { background: var(--primary); color: #FFFFFF; }
