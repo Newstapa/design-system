@@ -16,5 +16,5 @@
 - 엔진은 의존성 없는 JavaScript(ES5 문법, 빌드 없음)입니다. TypeScript나 번들러를 들이지 않습니다.
 - 엔진을 고치면 `examples/` 전체를 렌더링해 결과 이미지를 확인합니다:
   `for f in examples/*.json; do python3 scripts/render.py "$f" -o "/tmp/$(basename "$f" .json).jpg"; done`
-- 웹 렌더러(`web/`)를 고치면 데스크톱과 모바일 너비에서 화면을 확인합니다.
+- Tapa Chart(`web/`)를 고치면 데스크톱과 모바일 너비에서 화면을 확인합니다.
 - 바꾼 내용은 `CHANGELOG.md`에 적고 `assets/tokens.json`의 `version`을 올립니다.

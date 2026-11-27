@@ -193,7 +193,7 @@
     var paths = flat(overrides);
     if (!paths.length) return null;
     var lines = paths.map(function (p) { return '- ' + labelOf(p) + ': ' + getPath(base, p) + ' → ' + getPath(overrides, p) + '   (' + p + ')'; });
-    return '뉴스타파 그래픽 렌더러에서 화면을 보며 조정한 디자인 값입니다.\n' +
+    return 'Tapa Chart에서 화면을 보며 조정한 디자인 값입니다.\n' +
       'Newstapa/design-system 저장소의 assets/tokens.json에 아래 값을 반영하고, guide.md의 색·글자 크기 표도 같이 맞춰 주세요. CHANGELOG에 적고 tokens.json의 version도 올려 주세요.\n\n' +
       '바꾼 값:\n' + lines.join('\n') + '\n\n' +
       'tokens.json에 덮어쓸 값(JSON 병합):\n' + JSON.stringify(overrides, null, 2) + '\n';
