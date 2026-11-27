@@ -23,7 +23,7 @@ AI에 기사나 데이터를 붙여넣고 **"시각화해줘"** 라고 쓰면 �
 |---|---|---|
 | Claude (Cowork, Claude Code, claude.ai) | `newstapa-graphics` 스킬 설치 (관리자가 조직 스킬로 등록) | 엔진이 그린 JPG. 디자인 완전 일치 |
 | ChatGPT, Gemini 등 | [`for-ai/custom-instructions.md`](for-ai/custom-instructions.md)의 문구를 맞춤형 GPT·Gem 지침에 붙여넣기 | AI가 가이드를 보고 직접 그림. 색·구성은 맞지만 세부는 조금 다를 수 있음 |
-| 정확히 같은 디자인이 필요할 때 | 없음 | AI가 준 JSON을 [웹 렌더러](https://newstapa.github.io/design-system/web/)에 붙여넣어 JPG 저장 |
+| 정확히 같은 디자인이 필요할 때 | 없음 | AI가 준 JSON을 [웹 렌더러](https://newstapa.github.io/design-system/web/)에 붙여넣어 다운로드(JPG·SVG·JSON) |
 
 ## 구성
 
@@ -57,7 +57,7 @@ assets/fonts, logo.png, maps/  Pretendard 글꼴, 로고, 한국 시·도 지도
 
 ## 일러스트레이터에서 고치기
 
-웹 렌더러의 'SVG 저장 (일러스트용)' 버튼, 또는 `render.py --svg`로 받은 SVG를 일러스트레이터에서 엽니다.
+웹 렌더러의 '다운로드' 버튼(JPG·SVG·JSON이 함께 저장됨), 또는 `render.py --svg`로 받은 SVG를 일러스트레이터에서 엽니다.
 글자는 줄 단위 텍스트, 막대·선은 개별 도형으로 들어 있어 바로 고칠 수 있습니다.
 
 - 맥에 **Pretendard 글꼴을 설치**해야 글자가 제대로 보입니다: https://github.com/orioncactus/pretendard/releases

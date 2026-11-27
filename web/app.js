@@ -1,5 +1,5 @@
 /* 뉴스타파 그래픽 렌더러 (A안: 페이지에 AI 없음)
- * 1) tokens.json을 읽는다  2) 붙여넣은 JSON을 엔진(NT.render)으로 그린다  3) html-to-image로 JPG 저장
+ * 1) tokens.json을 읽는다  2) 붙여넣은 JSON을 엔진(NT.render)으로 그린다  3) 다운로드 버튼 하나로 JPG·SVG·JSON 저장
  * 모든 처리는 브라우저 안에서 일어나며 서버로 보내는 데이터는 없다.
  */
 (function () {
@@ -15,7 +15,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var specEl = $('spec'), msgEl = $('messages'), mount = $('mount'), scaler = $('scaler'), stage = $('stage');
-  var accentEl = $('accent'), sizeEl = $('sizeInfo'), saveBtn = $('save'), svgBtn = $('saveSvg'), emptyEl = $('empty');
+  var accentEl = $('accent'), sizeEl = $('sizeInfo'), saveBtn = $('save'), emptyEl = $('empty');
   var tokens = null, baseTokens = null, geo = null, timer = null, lastTitle = 'graphic';
 
   window.NT_LOGO_SRC = BASE + 'assets/logo.png';
@@ -69,15 +69,15 @@
   async function render() {
     var text = specEl.value.trim();
     if (EMPTY_HTML == null) EMPTY_HTML = emptyEl.innerHTML;
-    if (!text) { resetEmpty(); mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; svgBtn.disabled = true; msgEl.innerHTML = ''; fit(); return; }
+    if (!text) { resetEmpty(); mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; msgEl.innerHTML = ''; fit(); return; }
     var spec;
-    try { spec = extractJSON(text); } catch (e) { showMessages(e.message); saveBtn.disabled = true; svgBtn.disabled = true; return; }
+    try { spec = extractJSON(text); } catch (e) { showMessages(e.message); saveBtn.disabled = true; return; }
     try {
       if (needsMap(spec) && !geo) { geo = await (await fetch(BASE + 'assets/maps/korea-sido.geo.json')).json(); window.NT_GEO_KOREA = geo; }
       scaler.style.transform = 'none';          // 엔진의 넘침 검사가 실제 크기로 이뤄지도록
       mount.innerHTML = '';
       var warns = NT.render(spec, tokens, mount);
-      emptyEl.hidden = true; saveBtn.disabled = false; svgBtn.disabled = false;
+      emptyEl.hidden = true; saveBtn.disabled = false;
       resetEmpty();
       lastTitle = (spec.title || 'graphic').replace(/\n/g, ' ');
       var newAcc = (tokens.accents && tokens.accents[spec.accent]) ? spec.accent : tokens.defaultAccent;
@@ -85,7 +85,7 @@
       showMessages(null, warns);
       if (window.NTTuner) NTTuner.refreshSpec(spec);
     } catch (e) {
-      mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true; svgBtn.disabled = true;
+      mount.innerHTML = ''; emptyEl.hidden = false; saveBtn.disabled = true;
       if (e && e.designer) { emptyEl.textContent = e.message; emptyEl.classList.add('designer-note'); }
       if (e && e.designer) msgEl.innerHTML = '<div class="designer"><b>디자이너 문의가 필요한 유형</b>' + esc(e.message) + '</div>';
       else showMessages('그리기 오류: ' + (e && e.message || e));
@@ -102,28 +102,30 @@
     a.href = href; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(href); }, 5000);
   }
-  async function saveSvg() {
-    var frame = mount.firstElementChild; if (!frame) return;
-    var prev = scaler.style.transform; scaler.style.transform = 'none';   // 실제 크기에서 위치를 잰다
-    try {
-      var svg = NTExport.toSVG(frame, tokens.canvas.scale), name = fileBase() + '.svg';
-      download(new Blob([svg], { type: 'image/svg+xml' }), name);
-      toast('저장했습니다: ' + name);
-    } catch (e) { toast('SVG 저장 실패: ' + (e && e.message || e)); }
-    scaler.style.transform = prev;
-  }
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  // JPG(기사용) · SVG(일러스트레이터 수정용) · JSON(다시 불러오기용)을 한 번에 받는다
   async function save() {
     var frame = mount.firstElementChild; if (!frame) return;
+    var spec; try { spec = extractJSON(specEl.value); } catch (e) { toast('JSON 형식 오류를 먼저 고쳐 주세요.'); return; }
     saveBtn.disabled = true; saveBtn.textContent = '저장 중…';
+    var base = fileBase(), done = [], fail = [];
+    var prev = scaler.style.transform; scaler.style.transform = 'none';   // 실제 크기에서 그린다
     try {
       var url = await htmlToImage.toJpeg(frame, { quality: tokens.canvas.quality / 100, pixelRatio: tokens.canvas.scale, backgroundColor: (tokens.color && tokens.color.background) || '#FFFFFF', cacheBust: false });
-      var name = fileBase() + '.jpg', sz = outSize();
-      download(await (await fetch(url)).blob(), name);
-      toast('저장했습니다: ' + name + ' (가로 ' + sz.w.toLocaleString() + 'px × 세로 ' + sz.h.toLocaleString() + 'px)');
-    } catch (e) {
-      toast('저장 실패: ' + (e && e.message || e));
-    }
-    saveBtn.disabled = false; saveBtn.textContent = 'JPG 저장';
+      download(await (await fetch(url)).blob(), base + '.jpg'); done.push('JPG');
+    } catch (e) { fail.push('JPG(' + (e && e.message || e) + ')'); }
+    await wait(300);
+    try {
+      download(new Blob([NTExport.toSVG(frame, tokens.canvas.scale)], { type: 'image/svg+xml' }), base + '.svg'); done.push('SVG');
+    } catch (e) { fail.push('SVG(' + (e && e.message || e) + ')'); }
+    await wait(300);
+    try {
+      download(new Blob([JSON.stringify(spec, null, 2) + '\n'], { type: 'application/json' }), base + '.json'); done.push('JSON');
+    } catch (e) { fail.push('JSON(' + (e && e.message || e) + ')'); }
+    scaler.style.transform = prev;
+    var sz = outSize();
+    toast(fail.length ? '일부 저장 실패: ' + fail.join(', ') : '저장했습니다: ' + base + ' (' + done.join('·') + ', 가로 ' + sz.w.toLocaleString() + 'px × 세로 ' + sz.h.toLocaleString() + 'px)');
+    saveBtn.disabled = false; saveBtn.textContent = '다운로드';
   }
 
   async function copyText(txt) {
@@ -165,7 +167,6 @@
       try { download(await (await fetch(BASE + 'assets/newstapa-logo.svg')).blob(), 'newstapa-logo.svg'); toast('뉴스타파 로고 SVG를 저장했습니다.'); }
       catch (e) { toast('로고 저장 실패: ' + (e && e.message || e)); }
     });
-    svgBtn.addEventListener('click', saveSvg);
     $('copyPrompt').addEventListener('click', copyPrompt);
     $('copyFull').addEventListener('click', copyFull);
     window.addEventListener('resize', fit);

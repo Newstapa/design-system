@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>뉴스타파 그래픽 렌더러</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.12.0">
-<link rel="stylesheet" href="app.css?v=0.12.0">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.12.1">
+<link rel="stylesheet" href="app.css?v=0.12.1">
 </head>
 <body>
 <header class="topbar">
@@ -43,7 +43,7 @@
     </li>
     <li class="card">
       <b><i>3</i>이미지 저장</b>
-      <span>숫자·출처를 확인하고 JPG로 저장하세요. 디자인을 수정하려면 '디자인 조정' 탭을 선택하세요.</span>
+      <span>숫자·출처를 확인하고 다운로드하세요. JPG·SVG·JSON이 한 번에 저장됩니다. 디자인을 수정하려면 '디자인 조정' 탭을 선택하세요.</span>
     </li>
   </ol>
 </section>
@@ -85,8 +85,7 @@
       </div>
       <div class="row-btns">
         <button id="saveLogo" class="btn ghost" type="button" title="그래픽 오른쪽 위에 들어가는 뉴스타파 로고(벡터)">로고 SVG</button>
-        <button id="saveSvg" class="btn" disabled title="어도비 일러스트레이터에서 글자·도형을 고칠 수 있는 파일">SVG 저장 (일러스트용)</button>
-        <button id="save" class="btn primary" disabled>JPG 저장</button>
+        <button id="save" class="btn primary" disabled title="JPG(기사용), SVG(일러스트레이터 수정용), JSON(다시 불러오기용)을 한 번에 받습니다">다운로드</button>
       </div>
     </div>
     <div id="stage" class="stage">
@@ -140,9 +139,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.12.0"></script>
-<script src="../engine/nt-export-svg.js?v=0.12.0"></script>
-<script src="tuner.js?v=0.12.0"></script>
-<script src="app.js?v=0.12.0"></script>
+<script src="../engine/nt-graphic.js?v=0.12.1"></script>
+<script src="../engine/nt-export-svg.js?v=0.12.1"></script>
+<script src="tuner.js?v=0.12.1"></script>
+<script src="app.js?v=0.12.1"></script>
 </body>
 </html>
