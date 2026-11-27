@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tapa Chart · 뉴스타파</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.14.2">
-<link rel="stylesheet" href="app.css?v=0.14.2">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.14.3">
+<link rel="stylesheet" href="app.css?v=0.14.3">
 </head>
 <body>
-<script>try { if (sessionStorage.getItem('nt-admin') === '1') document.body.classList.add('admin'); } catch (e) {}</script>
+<script>try { if (sessionStorage.getItem('nt-admin') === '1') { document.body.classList.add('admin'); document.title = 'Tapa Chart Pro · 뉴스타파'; } } catch (e) {}</script>
 <header class="topbar" id="topbar">
   <svg class="hold-ring" aria-hidden="true"><rect class="track" pathLength="100"/><rect class="fill" pathLength="100"/></svg>
   <div class="brand">
     <span class="brand-mark" id="brandMark"><img class="brand-logo" src="../assets/newstapa-logo.svg" alt="뉴스타파" draggable="false"></span>
     <div class="brand-text">
-      <h1>Tapa Chart</h1>
+      <h1>Tapa Chart<span class="pro admin-only"> Pro</span></h1>
       <p>뉴스타파 디자인 가이드대로 시각화를 합니다.</p>
     </div>
   </div>
@@ -142,9 +142,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.14.2"></script>
-<script src="../engine/nt-export-svg.js?v=0.14.2"></script>
-<script src="tuner.js?v=0.14.2"></script>
-<script src="app.js?v=0.14.2"></script>
+<script src="../engine/nt-graphic.js?v=0.14.3"></script>
+<script src="../engine/nt-export-svg.js?v=0.14.3"></script>
+<script src="tuner.js?v=0.14.3"></script>
+<script src="app.js?v=0.14.3"></script>
 </body>
 </html>

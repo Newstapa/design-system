@@ -219,6 +219,7 @@
   function applyAdmin(on, announce) {
     isAdmin = on;
     document.body.classList.toggle('admin', on);
+    document.title = (on ? 'Tapa Chart Pro' : 'Tapa Chart') + ' · 뉴스타파';
     try { if (on) sessionStorage.setItem(ADMIN_KEY, '1'); else sessionStorage.removeItem(ADMIN_KEY); } catch (e) {}
     if (!on) { var j = document.querySelector('.tab[data-tab="json"]'); if (j) j.click(); }   // 숨길 때는 JSON 탭으로
     if (baseTokens) { tokens = currentTokens(); render(); }
