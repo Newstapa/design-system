@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tapa Chart · 뉴스타파</title>
-<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.14.7">
-<link rel="stylesheet" href="app.css?v=0.14.7">
+<link rel="stylesheet" href="../engine/nt-graphic.css?v=0.15.1">
+<link rel="stylesheet" href="app.css?v=0.15.1">
 </head>
 <body>
 <script>try { if (sessionStorage.getItem('nt-admin') === '1') { document.body.classList.add('admin'); document.title = 'Tapa Chart Pro · 뉴스타파'; } } catch (e) {}</script>
@@ -26,25 +26,17 @@
 </header>
 
 <section class="steps">
-  <ol>
-    <li class="card">
-      <b><i>1</i>AI에게 요청하기</b>
-      <span>요청문을 복사해 사용 중인 AI 대화창에 붙여넣고, 기사나 데이터를 덧붙이세요.</span>
-      <div class="row">
-        <button id="copyPrompt" class="btn primary">요청문 복사</button>
-        <button id="copyFull" class="btn ghost" title="주소를 열지 못하는 AI용">전체 지침 복사</button>
-      </div>
-      <span class="hint">AI가 "주소를 열 수 없다"고 하면 '전체 지침 복사'를 쓰세요.</span>
-    </li>
-    <li class="card">
-      <b><i>2</i>JSON 붙여넣기</b>
-      <span>AI가 준 답을 통째로 아래 JSON 칸에 붙여넣으면 바로 미리보기가 바뀝니다.</span>
-    </li>
-    <li class="card">
-      <b><i>3</i>이미지 저장</b>
-      <span>숫자·출처를 확인하고 다운로드하세요. JPG·SVG·JSON이 한 번에 저장됩니다.</span>
-    </li>
-  </ol>
+  <div class="card stepbar">
+    <div class="stepbar-act">
+      <button id="copyPrompt" class="btn primary">요청문 복사</button>
+    </div>
+    <ol class="stepbar-flow">
+      <li><i>1</i><span>AI 대화창에 붙여넣고 <b>기사·데이터</b> 덧붙이기</span></li>
+      <li><i>2</i><span>AI 답을 아래 <b>JSON 칸</b>에 붙여넣기</span></li>
+      <li><i>3</i><span>숫자·출처 확인 후 <b>다운로드</b></span></li>
+    </ol>
+    <button id="copyFull" class="btn ghost stepbar-full" title="AI가 &quot;주소를 열 수 없다&quot;고 하면 이것을 복사해 붙여넣으세요">전체 지침 복사</button>
+  </div>
 </section>
 
 <main class="workspace">
@@ -144,9 +136,9 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="vendor/html-to-image.js"></script>
-<script src="../engine/nt-graphic.js?v=0.14.7"></script>
-<script src="../engine/nt-export-svg.js?v=0.14.7"></script>
-<script src="tuner.js?v=0.14.7"></script>
-<script src="app.js?v=0.14.7"></script>
+<script src="../engine/nt-graphic.js?v=0.15.1"></script>
+<script src="../engine/nt-export-svg.js?v=0.15.1"></script>
+<script src="tuner.js?v=0.15.1"></script>
+<script src="app.js?v=0.15.1"></script>
 </body>
 </html>
